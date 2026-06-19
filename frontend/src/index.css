@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tokeo Academy Brand Palette */
+  --color-tokeo-navy: #10112c;
+  --color-tokeo-cream: #fcf9d6;
+  --color-tokeo-gold: #eaa623;
+  --color-tokeo-offwhite: #f7f5ee;
+
+  
+  /* Typography */
+  --font-sans: "Poppins", "Century Gothic", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-tokeo-navy text-tokeo-cream font-sans antialiased;
+  }
+}

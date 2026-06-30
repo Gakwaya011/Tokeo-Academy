@@ -20,7 +20,7 @@ function useScrollReveal(threshold = 0.1) {
 export default function CTASection() {
   const section = useScrollReveal(0.1)
 
-  const item = (delay: number, extra = '') =>
+  const item = (_delay: number, extra = '') =>
     `transition-[opacity,transform] duration-600 ${extra} ${
       section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
     }`

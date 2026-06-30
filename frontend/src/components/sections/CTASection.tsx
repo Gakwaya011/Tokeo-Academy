@@ -4,6 +4,7 @@ import Button from '../ui/Button'
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
+
   useEffect(() => {
     const el = ref.current
     if (!el) return
@@ -14,13 +15,14 @@ function useScrollReveal(threshold = 0.1) {
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
+
   return { ref, visible }
 }
 
 export default function CTASection() {
   const section = useScrollReveal(0.1)
 
-  const item = (_delay: number, extra = '') =>
+  const baseTransition = (extra = '') =>
     `transition-[opacity,transform] duration-600 ${extra} ${
       section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
     }`
@@ -31,9 +33,8 @@ export default function CTASection() {
         ref={section.ref}
         className="max-w-4xl mx-auto flex flex-col items-start gap-8 text-left"
       >
-
         <span
-          className={item(0)}
+          className={baseTransition()}
           style={{ transitionDelay: '0ms' }}
         >
           <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
@@ -70,7 +71,6 @@ export default function CTASection() {
           <Button href="/contact" size="lg">Join the Waitlist</Button>
           <Button href="/contact" variant="secondary" size="lg">Partner With Us</Button>
         </div>
-
       </div>
     </section>
   )

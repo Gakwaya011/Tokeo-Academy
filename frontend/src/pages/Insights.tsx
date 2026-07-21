@@ -1,12 +1,7 @@
-import { PenLine } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
 import Button from '../components/ui/Button'
-
-const topics = [
-  'Execution habits',
-  'Accountability systems',
-  'Daily planning',
-  'Consistency over motivation',
-]
+import { articles } from '../data/articles'
 
 export default function Insights() {
   return (
@@ -28,35 +23,70 @@ export default function Insights() {
         </div>
       </section>
 
-      {/* Coming soon */}
-      <section className="w-full bg-tokeo-offwhite px-6 py-28 md:px-12 lg:px-24">
-        <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-6">
-          <span className="w-14 h-14 rounded-2xl bg-tokeo-navy flex items-center justify-center">
-            <PenLine size={22} className="text-tokeo-gold" />
-          </span>
+      {/* Article grid */}
+      <section className="w-full bg-tokeo-offwhite px-6 py-32 md:px-12 lg:px-24">
+        <div className="max-w-6xl mx-auto flex flex-col gap-16">
 
-          <h2 className="text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight">
-            The first pieces publish with the pilot.
-          </h2>
+          <div className="max-w-2xl">
+            <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+              Latest
+            </span>
+            <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
+              The kind of writing to expect.
+            </h2>
+          </div>
 
-          <p className="text-tokeo-navy/55 text-lg leading-relaxed max-w-xl">
-            We are writing from what actually happens inside the cohort,
-            not in advance of it — so insights will start publishing once
-            the pilot is underway.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-2.5 mt-2">
-            {topics.map((topic) => (
-              <span
-                key={topic}
-                className="text-sm text-tokeo-navy/60 border border-tokeo-navy/15 rounded-full px-4 py-1.5"
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {articles.map(({ slug, image, imageFocus, category, title, excerpt }) => (
+              <Link
+                key={slug}
+                to={`/insights/${slug}`}
+                className="group flex flex-col bg-white border border-tokeo-navy/10 rounded-2xl overflow-hidden hover:border-tokeo-gold/50 hover:shadow-lg hover:shadow-tokeo-navy/5 transition-all"
               >
-                {topic}
-              </span>
+                <div className="relative h-44">
+                  <img src={image} alt="" style={{ objectPosition: imageFocus }} className="w-full h-full object-cover" />
+                  <span className="absolute top-4 left-4 text-[0.65rem] font-bold tracking-widest uppercase text-tokeo-navy bg-white/90 px-3 py-1 rounded-full">
+                    {category}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-3 p-7">
+                  <h3 className="text-tokeo-navy text-xl font-bold tracking-tight leading-snug">
+                    {title}
+                  </h3>
+                  <p className="text-tokeo-navy/55 text-sm leading-relaxed">
+                    {excerpt}
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-tokeo-gold mt-2">
+                    Read full story
+                    <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
 
-          <Button href="/contact" size="md" className="mt-4">Get notified when we publish</Button>
+        </div>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24">
+        <div className="max-w-4xl mx-auto flex flex-col items-start gap-8">
+
+          <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+            Stay in the loop
+          </span>
+
+          <h2 className="text-4xl md:text-5xl font-bold text-tokeo-cream leading-[1.05] tracking-tight">
+            Be first to read.
+          </h2>
+
+          <p className="text-tokeo-cream/55 text-lg leading-relaxed max-w-xl">
+            Leave your details and we'll let you know the moment the
+            first pieces go live.
+          </p>
+
+          <Button href="/contact" size="lg" className="mt-2">Get notified</Button>
+
         </div>
       </section>
     </>

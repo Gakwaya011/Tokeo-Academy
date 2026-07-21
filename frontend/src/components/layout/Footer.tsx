@@ -134,10 +134,13 @@ export default function Footer() {
             © {new Date().getFullYear()} Tokeo Academy. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            {['Privacy Policy', 'Terms of Service'].map(label => (
+            {[
+              { label: 'Privacy Policy', href: '/privacy-policy' },
+              { label: 'Terms of Service', href: '/terms-of-service' },
+            ].map(({ label, href }) => (
               <a
                 key={label}
-                href="#"
+                href={href}
                 className="text-tokeo-cream/20 text-xs hover:text-tokeo-cream/50 transition-colors duration-200"
               >
                 {label}

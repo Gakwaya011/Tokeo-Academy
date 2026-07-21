@@ -1,6 +1,6 @@
 import {
   Compass, ShieldCheck, Sunrise, CalendarCheck, Users, Radar,
-  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown,
+  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown, MessageCircle,
 } from 'lucide-react'
 import Button from '../components/ui/Button'
 
@@ -219,22 +219,28 @@ export default function Programs() {
               Investment
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
-              One price. No hidden tiers.
+              Pricing, shared when we talk.
             </h2>
           </div>
 
           <div className="border border-tokeo-navy/15 p-10 md:p-12 flex flex-col gap-8">
-            <div className="flex items-baseline gap-3">
-              {/* TODO: Replace with real price once confirmed */}
-              <span className="text-5xl md:text-6xl font-bold text-tokeo-navy tracking-tight">
-                RWF [PRICE TBD]
+            <div className="flex items-start gap-4">
+              <span className="w-11 h-11 rounded-xl bg-tokeo-navy flex items-center justify-center shrink-0">
+                <MessageCircle size={19} className="text-tokeo-gold" />
               </span>
-              <span className="text-tokeo-navy/40 text-lg">/ pilot cohort</span>
+              <div className="flex flex-col gap-2">
+                <p className="text-tokeo-navy text-xl font-bold tracking-tight">
+                  Get in touch for pricing.
+                </p>
+                <p className="text-tokeo-navy/55 leading-relaxed">
+                  Cost is discussed directly with each applicant. Reach out
+                  and we will walk you through it.
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col gap-4 pt-6 border-t border-tokeo-navy/10">
               <p className="text-tokeo-navy/70 leading-relaxed">
-                {/* TODO: Replace with real description once confirmed */}
                 Includes full access to the 5-step execution system, daily
                 planning and accountability nudges, cohort visibility, and
                 direct support for the full duration of the pilot.

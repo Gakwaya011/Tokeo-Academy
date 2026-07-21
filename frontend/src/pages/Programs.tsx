@@ -1,4 +1,55 @@
+import {
+  Compass, ShieldCheck, Sunrise, CalendarCheck, Users, Radar,
+  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown,
+} from 'lucide-react'
 import Button from '../components/ui/Button'
+
+const pillars = [
+  {
+    id: 'overview',
+    icon: Compass,
+    title: 'Pilot Overview',
+    blurb: 'What the cohort is, and who it is for.',
+  },
+  {
+    id: 'accountability',
+    icon: ShieldCheck,
+    title: 'Accountability Structure',
+    blurb: 'How we keep every participant honest.',
+  },
+  {
+    id: 'daily-rhythm',
+    icon: Sunrise,
+    title: 'Daily Rhythm',
+    blurb: 'The planning and nudge loop, every day.',
+  },
+]
+
+const accountabilityItems = [
+  {
+    icon: CalendarCheck,
+    title: 'Daily check-ins',
+    body: 'A short daily log of what you planned versus what you actually did. No streaks to game, just honest tracking.',
+  },
+  {
+    icon: Users,
+    title: 'Cohort visibility',
+    body: 'You are not executing alone in a vacuum. A small group of peers sees your consistency, and you see theirs.',
+  },
+  {
+    icon: Radar,
+    title: 'Drift alerts',
+    body: 'When you start skipping days, the system flags it early, before two missed days quietly become twenty.',
+  },
+]
+
+const rhythmSteps = [
+  { icon: Sunrise, label: 'Morning nudge' },
+  { icon: NotebookPen, label: 'Plan the day' },
+  { icon: Zap, label: 'Execute' },
+  { icon: Moon, label: 'Evening log' },
+  { icon: RotateCcw, label: 'Reflect' },
+]
 
 export default function Programs() {
   return (
@@ -20,13 +71,37 @@ export default function Programs() {
         </div>
       </section>
 
+      {/* Program at a glance */}
+      <section className="w-full bg-tokeo-offwhite px-6 py-20 md:px-12 lg:px-24">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {pillars.map(({ id, icon: Icon, title, blurb }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              className="group flex flex-col gap-4 bg-white border border-tokeo-navy/10 rounded-2xl p-7 hover:border-tokeo-gold/50 hover:shadow-lg hover:shadow-tokeo-navy/5 transition-all"
+            >
+              <span className="w-11 h-11 rounded-xl bg-tokeo-navy flex items-center justify-center shrink-0">
+                <Icon size={20} className="text-tokeo-gold" />
+              </span>
+              <div className="flex flex-col gap-1.5">
+                <h3 className="text-tokeo-navy font-bold text-lg tracking-tight">{title}</h3>
+                <p className="text-tokeo-navy/55 text-sm leading-relaxed">{blurb}</p>
+              </div>
+              <span className="mt-auto inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase text-tokeo-navy/40 group-hover:text-tokeo-gold transition-colors">
+                Learn more <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* Overview */}
-      <section className="w-full bg-tokeo-offwhite px-6 py-32 md:px-12 lg:px-24">
+      <section id="overview" className="w-full bg-tokeo-offwhite px-6 pt-4 pb-32 md:px-12 lg:px-24 scroll-mt-28">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
 
           <div className="lg:col-span-4">
-            <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-              Overview
+            <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+              <Compass size={14} /> Overview
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
               What the pilot actually is.
@@ -55,79 +130,81 @@ export default function Programs() {
       </section>
 
       {/* Accountability structure */}
-      <section className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24">
+      <section id="accountability" className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24 scroll-mt-20">
         <div className="max-w-6xl mx-auto flex flex-col gap-16">
 
           <div className="max-w-2xl">
-            <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-              Accountability Structure
+            <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+              <ShieldCheck size={14} /> Accountability Structure
             </span>
             <h2 className="text-4xl font-bold text-tokeo-cream leading-tight mt-5 tracking-tight">
               How we keep you honest.
             </h2>
           </div>
 
-          <div className="flex flex-col">
-
-            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 py-8 border-b border-white/10">
-              <h3 className="text-tokeo-cream text-2xl font-bold md:w-64 shrink-0">
-                Daily check-ins
-              </h3>
-              <p className="text-tokeo-cream/55 text-lg leading-relaxed">
-                A short daily log of what you planned versus what you
-                actually did. No streaks to game, just honest tracking.
-              </p>
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 py-8 border-b border-white/10">
-              <h3 className="text-tokeo-cream text-2xl font-bold md:w-64 shrink-0">
-                Cohort visibility
-              </h3>
-              <p className="text-tokeo-cream/55 text-lg leading-relaxed">
-                You are not executing alone in a vacuum. A small group
-                of peers sees your consistency, and you see theirs.
-              </p>
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12 py-8">
-              <h3 className="text-tokeo-cream text-2xl font-bold md:w-64 shrink-0">
-                Drift alerts
-              </h3>
-              <p className="text-tokeo-cream/55 text-lg leading-relaxed">
-                When you start skipping days, the system flags it
-                early, before two missed days quietly become twenty.
-              </p>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {accountabilityItems.map(({ icon: Icon, title, body }) => (
+              <div key={title} className="flex flex-col gap-4">
+                <span className="w-11 h-11 rounded-xl bg-white/6 border border-white/10 flex items-center justify-center shrink-0">
+                  <Icon size={19} className="text-tokeo-gold" />
+                </span>
+                <h3 className="text-tokeo-cream text-xl font-bold">{title}</h3>
+                <p className="text-tokeo-cream/55 text-base leading-relaxed">{body}</p>
+              </div>
+            ))}
           </div>
+
         </div>
       </section>
 
       {/* Daily planning & nudges */}
-      <section className="w-full bg-tokeo-offwhite px-6 py-32 md:px-12 lg:px-24">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <section id="daily-rhythm" className="w-full bg-tokeo-offwhite px-6 py-32 md:px-12 lg:px-24 scroll-mt-20">
+        <div className="max-w-6xl mx-auto flex flex-col gap-16">
 
-          <div className="lg:col-span-4">
-            <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-              Daily Rhythm
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+              <Sunrise size={14} /> Daily Rhythm
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
               Planning and nudges, built in.
             </h2>
           </div>
 
-          <div className="lg:col-span-8 flex flex-col gap-7">
-            <p className="text-tokeo-navy text-2xl leading-relaxed font-medium tracking-tight">
-              Every day opens with a short planning prompt and closes
-              with a short reflection. That is the entire loop.
-            </p>
-            <p className="text-tokeo-navy/55 text-lg leading-relaxed">
-              You receive a nudge in the morning to set your single
-              action for the day, and a nudge in the evening to log
-              whether it happened. No complicated dashboards, no
-              twenty-minute planning sessions — just enough structure
-              to keep momentum without becoming a burden itself.
-            </p>
+          {/* Loop visual */}
+          <div className="flex flex-wrap items-center gap-y-8">
+            {rhythmSteps.map(({ icon: Icon, label }, i) => (
+              <div key={label} className="flex items-center">
+                <div className="flex flex-col items-center gap-3 w-28 sm:w-32">
+                  <span className="w-14 h-14 rounded-full bg-white border border-tokeo-navy/15 flex items-center justify-center shadow-sm">
+                    <Icon size={20} className="text-tokeo-navy" />
+                  </span>
+                  <span className="text-tokeo-navy/70 text-sm font-semibold text-center leading-snug">{label}</span>
+                </div>
+                {i < rhythmSteps.length - 1 && (
+                  <ArrowRight size={16} className="text-tokeo-navy/25 mx-1 sm:mx-2 shrink-0 hidden sm:block" />
+                )}
+                {i < rhythmSteps.length - 1 && (
+                  <ArrowDown size={16} className="text-tokeo-navy/25 mx-1 shrink-0 sm:hidden" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <div className="lg:col-span-4" />
+            <div className="lg:col-span-8 flex flex-col gap-7">
+              <p className="text-tokeo-navy text-2xl leading-relaxed font-medium tracking-tight">
+                Every day opens with a short planning prompt and closes
+                with a short reflection. That is the entire loop.
+              </p>
+              <p className="text-tokeo-navy/55 text-lg leading-relaxed">
+                You receive a nudge in the morning to set your single
+                action for the day, and a nudge in the evening to log
+                whether it happened. No complicated dashboards, no
+                twenty-minute planning sessions — just enough structure
+                to keep momentum without becoming a burden itself.
+              </p>
+            </div>
           </div>
 
         </div>

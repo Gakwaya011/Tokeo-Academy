@@ -1,22 +1,11 @@
-const articles = [
-  {
-    title: 'Why knowledge alone never builds discipline',
-    excerpt: 'Information has never been the bottleneck. The real gap is between knowing what to do and actually doing it, day after day.',
-    date: 'Coming soon',
-    readTime: '4 min read',
-  },
-  {
-    title: 'The cost of starting over every Monday',
-    excerpt: 'Restarting a habit is not free. Every reset costs momentum, confidence, and trust in your own follow-through.',
-    date: 'Coming soon',
-    readTime: '5 min read',
-  },
-  {
-    title: 'What accountability actually means',
-    excerpt: 'It is not about guilt or pressure. Real accountability is a structure that notices drift before it becomes a pattern.',
-    date: 'Coming soon',
-    readTime: '3 min read',
-  },
+import { PenLine } from 'lucide-react'
+import Button from '../components/ui/Button'
+
+const topics = [
+  'Execution habits',
+  'Accountability systems',
+  'Daily planning',
+  'Consistency over motivation',
 ]
 
 export default function Insights() {
@@ -39,29 +28,35 @@ export default function Insights() {
         </div>
       </section>
 
-      {/* Article list */}
+      {/* Coming soon */}
       <section className="w-full bg-tokeo-offwhite px-6 py-28 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto flex flex-col">
-          {articles.map(({ title, excerpt, date, readTime }, i) => (
-            <article
-              key={title}
-              className={`flex flex-col gap-3 py-10 ${
-                i !== articles.length - 1 ? 'border-b border-tokeo-navy/15' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3 text-xs text-tokeo-navy/40 font-semibold tracking-widest uppercase">
-                <span>{date}</span>
-                <span className="w-1 h-1 rounded-full bg-tokeo-navy/30" />
-                <span>{readTime}</span>
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-tokeo-navy tracking-tight leading-snug">
-                {title}
-              </h2>
-              <p className="text-tokeo-navy/55 text-lg leading-relaxed max-w-2xl">
-                {excerpt}
-              </p>
-            </article>
-          ))}
+        <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-6">
+          <span className="w-14 h-14 rounded-2xl bg-tokeo-navy flex items-center justify-center">
+            <PenLine size={22} className="text-tokeo-gold" />
+          </span>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight">
+            The first pieces publish with the pilot.
+          </h2>
+
+          <p className="text-tokeo-navy/55 text-lg leading-relaxed max-w-xl">
+            We are writing from what actually happens inside the cohort,
+            not in advance of it — so insights will start publishing once
+            the pilot is underway.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-2.5 mt-2">
+            {topics.map((topic) => (
+              <span
+                key={topic}
+                className="text-sm text-tokeo-navy/60 border border-tokeo-navy/15 rounded-full px-4 py-1.5"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
+
+          <Button href="/contact" size="md" className="mt-4">Get notified when we publish</Button>
         </div>
       </section>
     </>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Loader from './components/Loader'
@@ -8,26 +9,45 @@ import About from './pages/About'
 import Programs from './pages/Programs'
 import Insights from './pages/Insights'
 import Contact from './pages/Contact'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import ForgotPassword from './pages/ForgotPassword'
+
+const AUTH_ROUTES = ['/login', '/signup', '/forgot-password']
+
+function AppShell() {
+  const location = useLocation()
+  const isAuthRoute = AUTH_ROUTES.includes(location.pathname)
+
+  return (
+    <>
+      {!isAuthRoute && <Navbar />}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
+      </main>
+      {!isAuthRoute && <Footer />}
+    </>
+  )
+}
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
 
   return (
-    <>
+    <AuthProvider>
       {!loaded && <Loader onDone={() => setLoaded(true)} />}
       <BrowserRouter>
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
-        </main>
-        <Footer />
+        <AppShell />
       </BrowserRouter>
-    </>
+    </AuthProvider>
   )
 }

@@ -22,14 +22,6 @@ export default function Hero() {
       <div className="relative z-10 max-w-6xl mx-auto w-full px-6 md:px-12 lg:px-24 py-28">
         <div className="max-w-2xl flex flex-col gap-7">
 
-          {/* Badge */}
-          <div className="flex items-center gap-2.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-tokeo-gold shrink-0 animate-pulse" />
-            <span className="text-xs font-bold tracking-[0.2em] uppercase text-tokeo-gold">
-              Execution Platform
-            </span>
-          </div>
-
           {/* Heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-tokeo-cream leading-[1.04] tracking-tight">
             Build execution habits that turn{' '}

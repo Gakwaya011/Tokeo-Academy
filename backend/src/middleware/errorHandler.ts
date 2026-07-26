@@ -3,7 +3,8 @@ import { ZodError } from 'zod'
 import { AppError } from '../utils/AppError'
 
 export function notFoundHandler(req: Request, res: Response) {
-  res.status(404).json({ error: `No route for ${req.method} ${req.path}` })
+  console.warn(`No route for ${req.method} ${req.path}`)
+  res.status(404).json({ error: 'Not found' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

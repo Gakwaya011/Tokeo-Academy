@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { LogOut, User as UserIcon } from 'lucide-react'
+import { LogOut, ShieldCheck, User as UserIcon } from 'lucide-react'
 import Button from '../ui/Button'
 import { useAuth } from '../../context/AuthContext'
 import logoCream from '../../assets/logo-cream.png'
@@ -90,6 +90,15 @@ export default function Navbar() {
                     <p className="text-sm font-medium truncate">{user.name}</p>
                     <p className="text-xs text-tokeo-navy/50 truncate">{user.email}</p>
                   </div>
+                  {user.role === 'ADMIN' && (
+                    <a
+                      href="/admin/messages"
+                      onClick={() => setAccountOpen(false)}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
+                    >
+                      <ShieldCheck size={14} /> Admin Dashboard
+                    </a>
+                  )}
                   <button
                     onClick={() => { logout(); setAccountOpen(false) }}
                     className="w-full flex items-center gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"

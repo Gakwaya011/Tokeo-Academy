@@ -11,6 +11,7 @@ export interface ButtonProps {
   onClick?: () => void
   className?: string
   type?: 'button' | 'submit'
+  disabled?: boolean
 }
 
 export interface SectionProps {

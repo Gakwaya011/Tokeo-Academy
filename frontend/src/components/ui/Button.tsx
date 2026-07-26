@@ -8,8 +8,9 @@ export default function Button({
   onClick,
   className = '',
   type = 'button',
+  disabled = false,
 }: ButtonProps) {
-  const base = 'inline-flex items-center justify-center font-semibold tracking-wide transition-all duration-200 cursor-pointer'
+  const base = 'inline-flex items-center justify-center font-semibold tracking-wide transition-all duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed'
 
   const variants = {
     primary: 'bg-tokeo-gold text-tokeo-navy hover:opacity-90',
@@ -29,7 +30,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
       {children}
     </button>
   )

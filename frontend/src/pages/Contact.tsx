@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '../components/ui/Button'
+import { apiRequest } from '../lib/api'
 
 type FormData = {
   name: string
@@ -33,15 +34,28 @@ const interestTypes = [
 export default function Contact() {
   const [form, setForm] = useState<FormData>(initialForm)
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', form)
-    setSubmitted(true)
+    setError('')
+    setLoading(true)
+    try {
+      await apiRequest('/api/contact', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      })
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputClass =
@@ -120,6 +134,10 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-10">
 
+                {error && (
+                  <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                   <input
                     type="text"
@@ -190,8 +208,8 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-fit mt-2">
-                  Submit Application
+                <Button type="submit" size="lg" className="w-fit mt-2" disabled={loading}>
+                  {loading ? 'Submitting...' : 'Submit Application'}
                 </Button>
 
               </form>

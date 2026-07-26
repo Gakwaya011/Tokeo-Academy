@@ -1,17 +1,17 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { apiRequest, clearToken, getToken, storeToken } from '../lib/api'
 
 interface User {
+  id: string
   name: string
   email: string
-}
-
-interface StoredAccount extends User {
-  password: string
+  role: 'USER' | 'ADMIN'
 }
 
 interface AuthContextValue {
   user: User | null
+  loading: boolean
   login: (email: string, password: string, remember: boolean) => Promise<void>
   signup: (name: string, email: string, password: string) => Promise<void>
   logout: () => void
@@ -20,79 +20,52 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-const ACCOUNTS_KEY = 'tokeo_accounts'
-const SESSION_KEY = 'tokeo_session'
-
-function readAccounts(): StoredAccount[] {
-  try {
-    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]')
-  } catch {
-    return []
-  }
-}
-
-function writeAccounts(accounts: StoredAccount[]) {
-  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts))
-}
-
-// Simulated network latency so the UI has something real to show loading/error states for.
-function delay(ms = 600) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY)
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored))
-      } catch {
-        // ignore corrupt session
-      }
+    if (!getToken()) {
+      setLoading(false)
+      return
     }
+    apiRequest<{ user: User }>('/api/auth/me')
+      .then(({ user }) => setUser(user))
+      .catch(() => clearToken())
+      .finally(() => setLoading(false))
   }, [])
 
   const login = async (email: string, password: string, remember: boolean) => {
-    await delay()
-    const account = readAccounts().find((a) => a.email.toLowerCase() === email.toLowerCase())
-    if (!account || account.password !== password) {
-      throw new Error('Incorrect email or password.')
-    }
-    const sessionUser: User = { name: account.name, email: account.email }
-    setUser(sessionUser)
-    const store = remember ? localStorage : sessionStorage
-    store.setItem(SESSION_KEY, JSON.stringify(sessionUser))
+    const { user, token } = await apiRequest<{ user: User; token: string }>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    })
+    storeToken(token, remember)
+    setUser(user)
   }
 
   const signup = async (name: string, email: string, password: string) => {
-    await delay()
-    const accounts = readAccounts()
-    if (accounts.some((a) => a.email.toLowerCase() === email.toLowerCase())) {
-      throw new Error('An account with this email already exists.')
-    }
-    const account: StoredAccount = { name, email, password }
-    writeAccounts([...accounts, account])
-    const sessionUser: User = { name, email }
-    setUser(sessionUser)
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser))
+    const { user, token } = await apiRequest<{ user: User; token: string }>('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    })
+    storeToken(token, true)
+    setUser(user)
   }
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem(SESSION_KEY)
-    sessionStorage.removeItem(SESSION_KEY)
+    clearToken()
   }
 
   const requestPasswordReset = async (email: string) => {
-    await delay()
-    // No email service is wired up yet — this only simulates the request.
+    // No backend endpoint for this yet — simulated until real email delivery is wired up.
+    await new Promise((resolve) => setTimeout(resolve, 600))
     void email
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, requestPasswordReset }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, requestPasswordReset }}>
       {children}
     </AuthContext.Provider>
   )

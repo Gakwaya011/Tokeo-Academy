@@ -16,16 +16,22 @@ import ForgotPassword from './pages/ForgotPassword'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
+import AdminRoute from './components/admin/AdminRoute'
+import AdminMessages from './pages/admin/Messages'
+import AdminInsights from './pages/admin/Insights'
+import AdminPrograms from './pages/admin/Programs'
 
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password']
 
 function AppShell() {
   const location = useLocation()
   const isAuthRoute = AUTH_ROUTES.includes(location.pathname)
+  const isAdminRoute = location.pathname.startsWith('/admin')
+  const hideChrome = isAuthRoute || isAdminRoute
 
   return (
     <>
-      {!isAuthRoute && <Navbar />}
+      {!hideChrome && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -39,10 +45,34 @@ function AppShell() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route
+            path="/admin/messages"
+            element={
+              <AdminRoute>
+                <AdminMessages />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/insights"
+            element={
+              <AdminRoute>
+                <AdminInsights />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/programs"
+            element={
+              <AdminRoute>
+                <AdminPrograms />
+              </AdminRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      {!isAuthRoute && <Footer />}
+      {!hideChrome && <Footer />}
     </>
   )
 }

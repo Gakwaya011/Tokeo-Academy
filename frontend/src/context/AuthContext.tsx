@@ -7,6 +7,7 @@ interface User {
   name: string
   email: string
   role: 'USER' | 'ADMIN'
+  hasAccess: boolean
 }
 
 interface AuthContextValue {
@@ -16,6 +17,7 @@ interface AuthContextValue {
   signup: (name: string, email: string, password: string) => Promise<void>
   logout: () => void
   requestPasswordReset: (email: string) => Promise<void>
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -64,8 +66,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void email
   }
 
+  const refreshUser = async () => {
+    const { user } = await apiRequest<{ user: User }>('/api/auth/me')
+    setUser(user)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, requestPasswordReset }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, requestPasswordReset, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

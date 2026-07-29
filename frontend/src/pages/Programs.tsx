@@ -1,21 +1,25 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
-  Compass, ShieldCheck, Sunrise, CalendarCheck, Users, Radar,
-  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown, MessageCircle,
+  Compass, ShieldCheck, Sunrise, CalendarCheck, ClipboardCheck, Radar,
+  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown, MessageCircle, Loader2,
 } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useAuth } from '../context/AuthContext'
+import { apiRequest } from '../lib/api'
 
 const pillars = [
   {
     id: 'overview',
     icon: Compass,
-    title: 'Pilot Overview',
-    blurb: 'What the cohort is, and who it is for.',
+    title: 'Platform Overview',
+    blurb: 'What you get, and how it works.',
   },
   {
     id: 'accountability',
     icon: ShieldCheck,
     title: 'Accountability Structure',
-    blurb: 'How we keep every participant honest.',
+    blurb: 'How we keep you honest, structurally.',
   },
   {
     id: 'daily-rhythm',
@@ -32,9 +36,9 @@ const accountabilityItems = [
     body: 'A short daily log of what you planned versus what you actually did. No streaks to game, just honest tracking.',
   },
   {
-    icon: Users,
-    title: 'Cohort visibility',
-    body: 'You are not executing alone in a vacuum. A small group of peers sees your consistency, and you see theirs.',
+    icon: ClipboardCheck,
+    title: 'Consistency trail',
+    body: 'Every planned action and logged outcome builds a visible track record, so drift shows up immediately, not weeks later.',
   },
   {
     icon: Radar,
@@ -52,21 +56,49 @@ const rhythmSteps = [
 ]
 
 export default function Programs() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const [price, setPrice] = useState<{ amount: number; currency: string } | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    apiRequest<{ amount: number; currency: string }>('/api/payments/price')
+      .then(setPrice)
+      .catch(() => {})
+  }, [])
+
+  async function handleGetAccess() {
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    setError('')
+    setLoading(true)
+    try {
+      const { link } = await apiRequest<{ link: string }>('/api/payments/initialize', { method: 'POST' })
+      window.location.href = link
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       {/* Hero — page intro */}
       <section className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24">
         <div className="max-w-4xl mx-auto flex flex-col gap-7">
           <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-            The Pilot Program
+            The Execution Platform
           </span>
           <h1 className="text-5xl md:text-7xl font-bold text-tokeo-cream leading-[1.02] tracking-tight">
-            A structured cohort built to prove the system works.
+            A structured system built to make execution automatic.
           </h1>
           <p className="text-tokeo-cream/50 text-xl leading-relaxed max-w-2xl">
-            The pilot is a limited, focused cohort — not an open course.
-            Small enough to actually hold every participant accountable,
-            structured enough to produce real, measurable execution.
+            This isn't a course, and there's no waiting list. It's a daily
+            operating system for execution — the same 5-step framework,
+            structure, and accountability, available the moment you join.
           </p>
         </div>
       </section>
@@ -104,14 +136,15 @@ export default function Programs() {
               <Compass size={14} /> Overview
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
-              What the pilot actually is.
+              What the platform actually is.
             </h2>
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-7">
             <p className="text-tokeo-navy text-2xl leading-relaxed font-medium tracking-tight">
-              A fixed-length cohort where a small group commits to one
-              clear execution system, together, with real accountability.
+              An execution system you can start using today — no cohort, no
+              start date, no waiting list. Just the 5-step framework and
+              daily structure, from the moment you get access.
             </p>
             <p className="text-tokeo-navy/55 text-lg leading-relaxed">
               You will not sit through generic lessons. You will plan
@@ -120,9 +153,9 @@ export default function Programs() {
               slipping — before it becomes a pattern.
             </p>
             <p className="text-tokeo-navy/55 text-lg leading-relaxed">
-              The goal of the pilot is simple: prove that the system
-              produces consistent execution for real people, in real
-              conditions, not just in theory.
+              The goal is simple: give you a system that produces
+              consistent execution for real people, in real conditions,
+              not just in theory.
             </p>
           </div>
 
@@ -219,7 +252,7 @@ export default function Programs() {
               Investment
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
-              Pricing, shared when we talk.
+              One price. Full access.
             </h2>
           </div>
 
@@ -230,53 +263,58 @@ export default function Programs() {
               </span>
               <div className="flex flex-col gap-2">
                 <p className="text-tokeo-navy text-xl font-bold tracking-tight">
-                  Get in touch for pricing.
+                  {price ? `${price.currency} ${price.amount.toLocaleString()}` : 'Full platform access.'}
                 </p>
                 <p className="text-tokeo-navy/55 leading-relaxed">
-                  Cost is discussed directly with each applicant. Reach out
-                  and we will walk you through it.
+                  One payment gives you the complete 5-step execution
+                  system, daily planning and accountability structure,
+                  and direct support — no cohort to wait for, no
+                  application to be accepted into.
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col gap-4 pt-6 border-t border-tokeo-navy/10">
               <p className="text-tokeo-navy/70 leading-relaxed">
-                Includes full access to the 5-step execution system, daily
-                planning and accountability nudges, cohort visibility, and
-                direct support for the full duration of the pilot.
+                Courses and additional programs are coming in a future
+                phase. This gives you full access to the core execution
+                platform today.
               </p>
             </div>
           </div>
 
-          <p className="text-tokeo-navy/45 text-sm">
-            Payment is collected after your application is reviewed and
-            accepted, not before.
-          </p>
-
         </div>
       </section>
 
-      {/* Eligibility / Application CTA */}
+      {/* Get access CTA */}
       <section className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24">
         <div className="max-w-4xl mx-auto flex flex-col items-start gap-8">
 
           <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-            Apply to the Pilot
+            Get Started
           </span>
 
           <h2 className="text-4xl md:text-5xl font-bold text-tokeo-cream leading-[1.05] tracking-tight">
-            Spots are limited, on purpose.
+            Start executing today.
           </h2>
 
           <p className="text-tokeo-cream/55 text-lg leading-relaxed max-w-xl">
-            The pilot is intentionally small to keep accountability
-            real. We are looking for people who are serious about
-            execution, not just curious about it. If that is you,
-            apply below.
+            No cohort to wait for and no application to submit. Pay once,
+            get instant access to the full execution platform, and start
+            your first day immediately.
           </p>
 
+          {error && (
+            <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+              {error}
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4 mt-2">
-            <Button href="/contact" size="lg">Apply for the Pilot</Button>
+            <Button onClick={handleGetAccess} size="lg" disabled={loading} className="gap-2">
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              Get Access
+            </Button>
             <Button href="/contact" variant="secondary" size="lg">Ask a Question</Button>
           </div>
 

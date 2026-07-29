@@ -20,6 +20,9 @@ import AdminRoute from './components/admin/AdminRoute'
 import AdminMessages from './pages/admin/Messages'
 import AdminInsights from './pages/admin/Insights'
 import AdminPrograms from './pages/admin/Programs'
+import RequireEnrollment from './components/payments/RequireEnrollment'
+import PaymentVerify from './pages/PaymentVerify'
+import Dashboard from './pages/Dashboard'
 
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password']
 
@@ -27,7 +30,8 @@ function AppShell() {
   const location = useLocation()
   const isAuthRoute = AUTH_ROUTES.includes(location.pathname)
   const isAdminRoute = location.pathname.startsWith('/admin')
-  const hideChrome = isAuthRoute || isAdminRoute
+  const isPlatformRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/payment')
+  const hideChrome = isAuthRoute || isAdminRoute || isPlatformRoute
 
   return (
     <>
@@ -45,6 +49,15 @@ function AppShell() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/payment/verify" element={<PaymentVerify />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireEnrollment>
+                <Dashboard />
+              </RequireEnrollment>
+            }
+          />
           <Route
             path="/admin/messages"
             element={

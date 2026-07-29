@@ -4,8 +4,15 @@ import { comparePassword, hashPassword } from '../../utils/password'
 import { signAccessToken } from '../../utils/jwt'
 import type { LoginInput, SignupInput } from './auth.schema'
 
-function toPublicUser(user: { id: string; name: string; email: string; role: 'USER' | 'ADMIN' }) {
-  return { id: user.id, name: user.name, email: user.email, role: user.role }
+async function toPublicUser(user: { id: string; name: string; email: string; role: 'USER' | 'ADMIN' }) {
+  const enrollment = await prisma.enrollment.findUnique({ where: { userId: user.id } })
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    hasAccess: enrollment?.status === 'ACTIVE',
+  }
 }
 
 export async function signup(input: SignupInput) {
@@ -20,7 +27,7 @@ export async function signup(input: SignupInput) {
   })
 
   const token = signAccessToken({ sub: user.id, role: user.role })
-  return { user: toPublicUser(user), token }
+  return { user: await toPublicUser(user), token }
 }
 
 export async function login(input: LoginInput) {
@@ -35,7 +42,7 @@ export async function login(input: LoginInput) {
   }
 
   const token = signAccessToken({ sub: user.id, role: user.role })
-  return { user: toPublicUser(user), token }
+  return { user: await toPublicUser(user), token }
 }
 
 export async function getUserById(id: string) {

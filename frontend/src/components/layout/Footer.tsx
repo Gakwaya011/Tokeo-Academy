@@ -108,9 +108,9 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3">
               {[
-                { label: 'hello@tokeo.academy', href: 'mailto:hello@tokeo.academy' },
-                { label: '+250 000 000 000',    href: 'tel:+250000000000' },
-                { label: 'Kigali, Rwanda',      href: '#' },
+                { label: 'tokeoacademy@gmail.com', href: 'mailto:tokeoacademy@gmail.com' },
+                { label: '+250 788 495 519',       href: 'tel:+250788495519' },
+                { label: 'Kigali, Rwanda',         href: '#' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a

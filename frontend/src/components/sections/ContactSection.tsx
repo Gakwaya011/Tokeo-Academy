@@ -31,12 +31,12 @@ const contactItems = [
   {
     icon: Phone,
     label: 'WhatsApp',
-    value: '+250 000 000 000',
+    value: '+250 788 495 519',
   },
   {
     icon: Mail,
     label: 'Email Us',
-    value: 'hello@tokeo.academy',
+    value: 'tokeoacademy@gmail.com',
   },
   {
     icon: Clock,

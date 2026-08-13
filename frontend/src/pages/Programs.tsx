@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   Compass, ShieldCheck, Sunrise, CalendarCheck, ClipboardCheck, Radar,
-  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown, MessageCircle, Loader2,
+  NotebookPen, Zap, Moon, RotateCcw, ArrowRight, ArrowDown, Clock,
 } from 'lucide-react'
 import Button from '../components/ui/Button'
-import { useAuth } from '../context/AuthContext'
-import { apiRequest } from '../lib/api'
+
+const plans = [
+  { label: 'Monthly', price: '$5', period: '/ month' },
+  { label: 'Yearly', price: '$48', period: '/ year' },
+]
 
 const pillars = [
   {
@@ -56,34 +57,6 @@ const rhythmSteps = [
 ]
 
 export default function Programs() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
-  const [price, setPrice] = useState<{ amount: number; currency: string } | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    apiRequest<{ amount: number; currency: string }>('/api/payments/price')
-      .then(setPrice)
-      .catch(() => {})
-  }, [])
-
-  async function handleGetAccess() {
-    if (!user) {
-      navigate('/login')
-      return
-    }
-    setError('')
-    setLoading(true)
-    try {
-      const { link } = await apiRequest<{ link: string }>('/api/payments/initialize', { method: 'POST' })
-      window.location.href = link
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-      setLoading(false)
-    }
-  }
-
   return (
     <>
       {/* Hero — page intro */}
@@ -252,36 +225,32 @@ export default function Programs() {
               Investment
             </span>
             <h2 className="text-4xl font-bold text-tokeo-navy leading-tight mt-5 tracking-tight">
-              One price. Full access.
+              Simple pricing. Full access.
             </h2>
           </div>
 
-          <div className="border border-tokeo-navy/15 p-10 md:p-12 flex flex-col gap-8">
-            <div className="flex items-start gap-4">
-              <span className="w-11 h-11 rounded-xl bg-tokeo-navy flex items-center justify-center shrink-0">
-                <MessageCircle size={19} className="text-tokeo-gold" />
-              </span>
-              <div className="flex flex-col gap-2">
-                <p className="text-tokeo-navy text-xl font-bold tracking-tight">
-                  {price ? `${price.currency} ${price.amount.toLocaleString()}` : 'Full platform access.'}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {plans.map(({ label, price, period }) => (
+              <div key={label} className="border border-tokeo-navy/15 p-10 flex flex-col gap-4">
+                <span className="text-xs font-bold tracking-[0.15em] uppercase text-tokeo-gold">
+                  {label}
+                </span>
+                <p className="text-tokeo-navy text-4xl font-bold tracking-tight">
+                  {price}
+                  <span className="text-tokeo-navy/40 text-base font-medium ml-1">{period}</span>
                 </p>
                 <p className="text-tokeo-navy/55 leading-relaxed">
-                  One payment gives you the complete 5-step execution
-                  system, daily planning and accountability structure,
-                  and direct support — no cohort to wait for, no
-                  application to be accepted into.
+                  Full access to the 5-step execution system, daily
+                  planning, and accountability structure.
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-4 pt-6 border-t border-tokeo-navy/10">
-              <p className="text-tokeo-navy/70 leading-relaxed">
-                Courses and additional programs are coming in a future
-                phase. This gives you full access to the core execution
-                platform today.
-              </p>
-            </div>
+            ))}
           </div>
+
+          <p className="text-tokeo-navy/50 text-sm leading-relaxed">
+            Courses and additional programs are coming in a future phase.
+            This gives you full access to the core execution platform today.
+          </p>
 
         </div>
       </section>
@@ -290,32 +259,22 @@ export default function Programs() {
       <section className="w-full bg-tokeo-navy px-6 py-32 md:px-12 lg:px-24">
         <div className="max-w-4xl mx-auto flex flex-col items-start gap-8">
 
-          <span className="text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
-            Get Started
+          <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-tokeo-gold">
+            <Clock size={14} /> Coming Soon
           </span>
 
           <h2 className="text-4xl md:text-5xl font-bold text-tokeo-cream leading-[1.05] tracking-tight">
-            Start executing today.
+            Online payment is on its way.
           </h2>
 
           <p className="text-tokeo-cream/55 text-lg leading-relaxed max-w-xl">
-            No cohort to wait for and no application to submit. Pay once,
-            get instant access to the full execution platform, and start
-            your first day immediately.
+            We are finalizing our payment provider so you can subscribe
+            directly on the site. In the meantime, reach out and we will
+            get you set up.
           </p>
 
-          {error && (
-            <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
-              {error}
-            </div>
-          )}
-
           <div className="flex flex-col sm:flex-row gap-4 mt-2">
-            <Button onClick={handleGetAccess} size="lg" disabled={loading} className="gap-2">
-              {loading && <Loader2 size={16} className="animate-spin" />}
-              Get Access
-            </Button>
-            <Button href="/contact" variant="secondary" size="lg">Ask a Question</Button>
+            <Button href="/contact" size="lg">Ask a Question</Button>
           </div>
 
         </div>

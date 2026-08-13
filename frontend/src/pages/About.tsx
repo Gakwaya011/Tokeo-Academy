@@ -1,3 +1,5 @@
+import founderPhoto from '../assets/founder.jpeg'
+
 export default function About() {
   return (
     <>
@@ -25,26 +27,11 @@ export default function About() {
           {/* Portrait placeholder */}
           <div className="lg:col-span-4">
             <div className="aspect-[4/5] w-full bg-tokeo-navy relative overflow-hidden">
-              {/* Abstract silhouette mark */}
-              <svg
-                viewBox="0 0 200 250"
-                className="absolute inset-0 w-full h-full"
-                preserveAspectRatio="xMidYMax slice"
-              >
-                <circle cx="100" cy="90" r="42" fill="#eaa62322" />
-                <path
-                  d="M 40 250 Q 40 150 100 150 Q 160 150 160 250 Z"
-                  fill="#eaa62315"
-                />
-              </svg>
-              <div className="absolute bottom-6 left-6">
-                <p className="text-tokeo-gold text-xs font-semibold tracking-widest uppercase">
-                  Founder
-                </p>
-                <p className="text-tokeo-cream/40 text-xs mt-1">
-                  Photo coming soon
-                </p>
-              </div>
+              <img
+                src={founderPhoto}
+                alt="Founder of Tokeo Academy"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             </div>
           </div>
 

@@ -8,7 +8,8 @@ import { paymentsRouter } from './modules/payments/payments.routes'
 
 export const app = express()
 
-app.use(cors({ origin: env.CORS_ORIGIN }))
+const allowedOrigins = env.CORS_ORIGIN.split(',').map(s => s.trim())
+app.use(cors({ origin: allowedOrigins }))
 app.use(express.json())
 
 app.get('/health', (req, res) => {

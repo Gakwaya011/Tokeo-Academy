@@ -6,8 +6,36 @@ on:
       - main
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install backend dependencies
+        run: cd backend && npm install
+      
+      - name: Type check backend
+        run: cd backend && npx tsc --noEmit
+      
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+      
+      - name: Type check frontend
+        run: cd frontend && npx tsc -b --noEmit
+      
+      - name: Build frontend
+        run: cd frontend && npm run build
+
   deploy:
     runs-on: ubuntu-latest
+    needs: test
     
     steps:
       - name: Checkout code
@@ -33,12 +61,30 @@ jobs:
             npx prisma generate
             npm run build
             
-            echo "--- Restarting backend ---"
-            pm2 restart tokeo-backend --update-env
+            echo "--- Restarting backend with rollback protection ---"
+            pm2 reload tokeo-backend --update-env || {
+              echo "!!! Reload failed, rolling back ---"
+              git reset --hard HEAD~1
+              npm run build
+              pm2 reload tokeo-backend --update-env
+              exit 1
+            }
             pm2 save
             
+            echo "--- Verifying backend is healthy ---"
+            sleep 5
+            pm2 show tokeo-backend | grep -q "online" || {
+              echo "!!! Backend crashed, rolling back ---"
+              cd /var/www/tokeo-academy
+              git reset --hard HEAD~1
+              cd backend
+              npm run build
+              pm2 reload tokeo-backend --update-env
+              exit 1
+            }
+            
             echo "--- Building frontend ---"
-            cd ../frontend
+            cd /var/www/tokeo-academy/frontend
             npm install
             npm run build
             

@@ -87,5 +87,9 @@ jobs:
             cd /var/www/tokeo-academy/frontend
             npm install
             npm run build
-            
+
+            echo "--- Starting/reloading frontend server ---"
+            pm2 describe tokeo-frontend > /dev/null 2>&1 && pm2 reload tokeo-frontend --update-env || pm2 start server.js --name tokeo-frontend
+            pm2 save
+
             echo "--- Deployment complete ---"

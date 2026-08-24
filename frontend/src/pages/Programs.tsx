@@ -176,21 +176,25 @@ export default function Programs() {
             </h2>
           </div>
 
-          {/* Loop visual */}
-          <div className="flex flex-wrap items-center gap-y-8">
+          {/* Loop visual — vertical stack on mobile (a wrapped horizontal
+              row orphaned the last step with a stray arrow), horizontal
+              flow with connecting arrows from sm up */}
+          <div className="max-w-xs sm:max-w-none mx-auto sm:mx-0 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-y-8">
             {rhythmSteps.map(({ icon: Icon, label }, i) => (
-              <div key={label} className="flex items-center">
-                <div className="flex flex-col items-center gap-3 w-28 sm:w-32">
-                  <span className="w-14 h-14 rounded-full bg-white border border-tokeo-navy/15 flex items-center justify-center shadow-sm">
+              <div key={label} className="flex flex-col sm:flex-row sm:items-center">
+                <div className="flex items-center gap-4 sm:flex-col sm:gap-3 sm:w-32">
+                  <span className="w-14 h-14 rounded-full bg-white border border-tokeo-navy/15 flex items-center justify-center shadow-sm shrink-0">
                     <Icon size={20} className="text-tokeo-navy" />
                   </span>
-                  <span className="text-tokeo-navy/70 text-sm font-semibold text-center leading-snug">{label}</span>
+                  <span className="text-tokeo-navy/70 text-sm font-semibold sm:text-center leading-snug">{label}</span>
                 </div>
                 {i < rhythmSteps.length - 1 && (
-                  <ArrowRight size={16} className="text-tokeo-navy/25 mx-1 sm:mx-2 shrink-0 hidden sm:block" />
+                  <div className="flex sm:hidden justify-start pl-6 py-1">
+                    <ArrowDown size={16} className="text-tokeo-navy/25" />
+                  </div>
                 )}
                 {i < rhythmSteps.length - 1 && (
-                  <ArrowDown size={16} className="text-tokeo-navy/25 mx-1 shrink-0 sm:hidden" />
+                  <ArrowRight size={16} className="text-tokeo-navy/25 mx-2 shrink-0 hidden sm:block" />
                 )}
               </div>
             ))}

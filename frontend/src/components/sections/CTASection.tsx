@@ -69,7 +69,7 @@ export default function CTASection() {
           style={{ transitionDelay: '400ms' }}
         >
           <Button href="/contact" size="lg">Join the Waitlist</Button>
-          <Button href="/contact" variant="secondary" size="lg">Partner With Us</Button>
+          <Button href="/contact" variant="outline" size="lg">Partner With Us</Button>
         </div>
       </div>
     </section>

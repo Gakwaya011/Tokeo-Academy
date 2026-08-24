@@ -15,6 +15,7 @@ export default function Button({
   const variants = {
     primary: 'bg-tokeo-gold text-tokeo-navy hover:opacity-90',
     secondary: 'border border-tokeo-cream text-tokeo-cream hover:bg-tokeo-cream hover:text-tokeo-navy',
+    outline: 'border border-tokeo-navy/20 text-tokeo-navy hover:bg-tokeo-navy hover:text-tokeo-cream',
   }
 
   const sizes = {

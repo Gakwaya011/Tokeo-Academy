@@ -5,7 +5,7 @@ export interface NavLink {
 
 export interface ButtonProps {
   children: React.ReactNode
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'outline'
   size?: 'sm' | 'md' | 'lg'
   href?: string
   onClick?: () => void

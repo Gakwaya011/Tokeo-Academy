@@ -65,6 +65,13 @@ export default function ProblemSolutionSection() {
             going after the motivation fades, and the accountability
             that notices when they quietly stop.
           </p>
+          <p className={`text-tokeo-navy/70 text-lg font-medium leading-relaxed relative z-10 mt-4 transition-[opacity,transform] duration-500 ${
+            section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`} style={{ transitionDelay: '540ms' }}>
+            The gap doesn't stay still. Every unfinished plan makes the
+            next one easier to abandon too — until "I'll start Monday"
+            becomes the whole strategy.
+          </p>
         </div>
 
         {/* Solution card — slides in from right */}

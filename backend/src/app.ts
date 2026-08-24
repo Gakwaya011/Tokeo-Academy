@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import helmet from 'helmet'
 import { env } from './config/env'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 import { authRouter } from './modules/auth/auth.routes'
@@ -7,6 +8,8 @@ import { contactRouter } from './modules/contact/contact.routes'
 import { paymentsRouter } from './modules/payments/payments.routes'
 
 export const app = express()
+
+app.use(helmet())
 
 const allowedOrigins = env.CORS_ORIGIN.split(',').map(s => s.trim())
 app.use(cors({ origin: allowedOrigins }))

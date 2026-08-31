@@ -52,3 +52,35 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
 
   return data as T
 }
+
+// For multipart/form-data uploads (e.g. admin forms with an image file) —
+// Content-Type is intentionally left unset so the browser adds the boundary.
+export async function apiUpload<T>(path: string, formData: FormData, options: RequestInit = {}): Promise<T> {
+  const token = getToken()
+
+  let res: Response
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      method: 'POST',
+      ...options,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+      body: formData,
+    })
+  } catch (err) {
+    console.error(`API request failed: ${path}`, err)
+    throw new Error(GENERIC_ERROR)
+  }
+
+  const data = await res.json().catch(() => ({}))
+
+  if (!res.ok) {
+    console.error(`API error (${res.status}) on ${path}:`, data)
+    const message = res.status < 500 && typeof data.error === 'string' ? data.error : GENERIC_ERROR
+    throw new Error(message)
+  }
+
+  return data as T
+}

@@ -1,23 +1,85 @@
-import imgExecutionNotes from '../assets/article-execution-notes.jpg'
-import imgCohortReflections from '../assets/article-cohort-reflections.jpg'
-import imgFounderNotes from '../assets/article-founder-notes.jpg'
-import imgPlanningExecution from '../assets/article-planning-execution.jpg'
+import { PrismaClient } from '@prisma/client'
 
-export type Article = {
-  slug: string
-  image: string
-  /** CSS object-position, tuned per photo so cropped thumbnails/banners keep the subject in frame */
-  imageFocus: string
-  category: string
-  title: string
-  excerpt: string
-  body: string[]
-}
+const prisma = new PrismaClient()
 
-export const articles: Article[] = [
+const programs = [
+  {
+    number: '00',
+    slug: 'inner-compass',
+    title: 'Inner Compass',
+    tagline: 'Lead yourself before you lead the work.',
+    challenge: 'You keep running into patterns in yourself that undermine otherwise good plans.',
+    artifact: 'A Personal Execution Compass',
+    quote: 'I know what needs to happen, but I may be part of what is getting in the way.',
+  },
+  {
+    number: '01',
+    slug: 'problem-framing',
+    title: 'Problem Framing',
+    tagline: 'Solve the right problem.',
+    challenge: 'You are busy solving symptoms while the real problem keeps coming back.',
+    artifact: 'An evidence-backed Problem Statement',
+    quote: "Something isn't working, but I'm not convinced we understand why.",
+  },
+  {
+    number: '02',
+    slug: 'critical-path',
+    title: 'Critical Path',
+    tagline: 'Find what must happen first.',
+    challenge: "There is plenty of activity, but the project still isn't moving fast enough.",
+    artifact: 'A Critical Path and Execution Plan',
+    quote: 'We know where we want to go. We need a credible path to get there.',
+  },
+  {
+    number: '03',
+    slug: 'team-execution',
+    title: 'Team Execution',
+    tagline: 'Turn a group of people into an execution machine.',
+    challenge: "The plan makes sense. The team isn't consistently delivering it.",
+    artifact: 'A Team Execution Diagnostic and Action Plan',
+    quote: "The outcome depends on other people, and something about how we're working together isn't clicking.",
+  },
+  {
+    number: '04',
+    slug: 'stakeholder-strategy',
+    title: 'Stakeholder Strategy',
+    tagline: 'Move the people who can move the outcome.',
+    challenge: "Success depends on people you don't directly control.",
+    artifact: 'A Stakeholder Influence Map',
+    quote: 'The plan is sound, but I need other people to make it possible.',
+  },
+  {
+    number: '05',
+    slug: 'prioritization-delegation',
+    title: 'Prioritization & Delegation',
+    tagline: 'Put scarce time where it matters most.',
+    challenge: "Everything feels important. Your calendar is full. Critical work still isn't moving.",
+    artifact: 'A Prioritized Execution System',
+    quote: 'I have more important work than I have time or capacity to do.',
+  },
+  {
+    number: '06',
+    slug: 'monitoring-evaluation-learning',
+    title: 'Monitoring, Evaluation & Learning',
+    tagline: "Know early whether it's working.",
+    challenge: 'You are doing the work, but discover too late whether it is producing the intended result.',
+    artifact: 'An Execution Scorecard and Learning Rhythm',
+    quote: "We're moving. I need to know whether we're moving toward the outcome.",
+  },
+  {
+    number: '07',
+    slug: 'risk-adaptation',
+    title: 'Risk & Adaptation',
+    tagline: 'See trouble before it becomes failure.',
+    challenge: "Good plans get derailed by foreseeable risks — or by surprises the team isn't prepared to absorb.",
+    artifact: 'A Risk, Early-Warning & Response Map',
+    quote: "The plan works if everything goes right. I need it to work when things don't.",
+  },
+]
+
+const insights = [
   {
     slug: 'why-knowledge-alone-never-builds-discipline',
-    image: imgExecutionNotes,
     imageFocus: '20% 45%',
     category: 'Execution Notes',
     title: 'Why Knowledge Alone Never Builds Discipline',
@@ -31,7 +93,6 @@ export const articles: Article[] = [
   },
   {
     slug: 'the-cost-of-starting-over-every-monday',
-    image: imgCohortReflections,
     imageFocus: 'center 15%',
     category: 'Cohort Reflections',
     title: 'The Cost of Starting Over Every Monday',
@@ -45,7 +106,6 @@ export const articles: Article[] = [
   },
   {
     slug: 'what-accountability-actually-means',
-    image: imgFounderNotes,
     imageFocus: 'center 75%',
     category: 'Founder Notes',
     title: 'What Accountability Actually Means',
@@ -59,7 +119,6 @@ export const articles: Article[] = [
   },
   {
     slug: 'planning-less-executing-more',
-    image: imgPlanningExecution,
     imageFocus: '65% 55%',
     category: 'Execution Notes',
     title: 'Planning Less, Executing More',
@@ -73,6 +132,29 @@ export const articles: Article[] = [
   },
 ]
 
-export function getArticleBySlug(slug: string) {
-  return articles.find((article) => article.slug === slug)
+async function main() {
+  for (const program of programs) {
+    await prisma.program.upsert({
+      where: { slug: program.slug },
+      update: program,
+      create: program,
+    })
+  }
+
+  for (const insight of insights) {
+    await prisma.insight.upsert({
+      where: { slug: insight.slug },
+      update: insight,
+      create: insight,
+    })
+  }
+
+  console.log(`Seeded ${programs.length} programs and ${insights.length} insights.`)
 }
+
+main()
+  .catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+  .finally(() => prisma.$disconnect())

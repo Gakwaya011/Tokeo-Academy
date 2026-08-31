@@ -1,15 +1,32 @@
+import { useContext, useEffect, useState } from 'react'
 import { Navigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Button from '../components/ui/Button'
-import { getArticleBySlug } from '../data/articles'
+import { InsightsDataContext } from '../context/InsightsDataContext'
+import { API_URL } from '../lib/api'
+import type { Insight } from '../types/insight'
 
 export default function InsightArticle() {
   const { slug } = useParams<{ slug: string }>()
-  const article = slug ? getArticleBySlug(slug) : undefined
+  const ssrInsights = useContext(InsightsDataContext)
+  const [article, setArticle] = useState<Insight | undefined>(() => ssrInsights?.find((a) => a.slug === slug))
+  const [notFound, setNotFound] = useState(false)
 
-  if (!article) return <Navigate to="/insights" replace />
+  useEffect(() => {
+    if (!slug) return
+    fetch(`${API_URL}/api/insights/${slug}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Not found')
+        return res.json()
+      })
+      .then(({ insight }) => setArticle(insight))
+      .catch(() => setNotFound(true))
+  }, [slug])
 
-  const { image, imageFocus, category, title, body } = article
+  if (notFound && !article) return <Navigate to="/insights" replace />
+  if (!article) return null
+
+  const { imageUrl, imageFocus, category, title, body } = article
 
   return (
     <>
@@ -29,14 +46,16 @@ export default function InsightArticle() {
       </section>
 
       {/* Cover image */}
-      <div className="w-full max-w-5xl mx-auto px-6 md:px-12 lg:px-0 -mt-10 relative z-10">
-        <img
-          src={image}
-          alt=""
-          style={{ objectPosition: imageFocus }}
-          className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-xl shadow-tokeo-navy/10"
-        />
-      </div>
+      {imageUrl && (
+        <div className="w-full max-w-5xl mx-auto px-6 md:px-12 lg:px-0 -mt-10 relative z-10">
+          <img
+            src={imageUrl}
+            alt=""
+            style={{ objectPosition: imageFocus }}
+            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-xl shadow-tokeo-navy/10"
+          />
+        </div>
+      )}
 
       {/* Body */}
       <section className="w-full bg-tokeo-offwhite px-6 pt-16 pb-28 md:px-12 lg:px-24">

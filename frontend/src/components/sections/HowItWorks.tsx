@@ -130,11 +130,11 @@ function IconImprove() {
 /* ── Step data ──────────────────────────────────────────────────── */
 
 const steps = [
-  { Icon: IconLearn,   title: 'Learn',   body: 'Absorb only what you need — just enough to act, not enough to stall.'       },
-  { Icon: IconPlan,    title: 'Plan',    body: 'Turn what you learned into one clear, specific action for the day ahead.'    },
-  { Icon: IconAct,     title: 'Act',     body: 'Do the real, imperfect version of the thing. Not tomorrow — today.'         },
-  { Icon: IconTrack,   title: 'Track',   body: 'Log what actually happened. No streaks to fake, no excuses to hide behind.' },
-  { Icon: IconImprove, title: 'Improve', body: 'Adjust based on what the data shows, not on how you feel about it.'         },
+  { Icon: IconPlan,    title: 'Assess',  body: 'An Execution Assessment finds the one capability holding you back most right now.'   },
+  { Icon: IconLearn,   title: 'Learn',   body: 'Work the module for that capability. Just enough to move, not enough to stall.'     },
+  { Icon: IconAct,     title: 'Apply',   body: 'Take it straight into a Virtual Execution Lab with a real challenge of your own.'   },
+  { Icon: IconTrack,   title: 'Ship',    body: "Leave with something real — a decision made, a plan written, a tool you'll reuse." },
+  { Icon: IconImprove, title: 'Move',    body: "Come back where the next constraint is. Not chapter one — wherever you're stuck."   },
 ]
 
 /* ── Section ────────────────────────────────────────────────────── */
@@ -161,7 +161,7 @@ export default function HowItWorks() {
             How <span className="text-tokeo-gold italic">Tokeo</span> Works
           </h2>
           <p className="text-tokeo-cream/45 text-base leading-relaxed max-w-md">
-            Five steps. The same loop, every day, until execution stops being a decision and becomes automatic.
+            A capability, a real challenge you are facing, and something you can use at the end — then again, wherever execution breaks next.
           </p>
         </div>
       </div>

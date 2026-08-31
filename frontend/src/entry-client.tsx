@@ -3,12 +3,31 @@ import { hydrateRoot, createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
+import { ProgramsDataContext } from './context/ProgramsDataContext'
+import { InsightsDataContext } from './context/InsightsDataContext'
+import type { Program } from './types/program'
+import type { Insight } from './types/insight'
+
+declare global {
+  interface Window {
+    __SSR_DATA__?: { programs: Program[] | null; insights: Insight[] | null }
+  }
+}
+
+// Read once, then drop it — only the very first paint needs to match what
+// the server embedded; any later navigation refetches on its own.
+const ssrData = window.__SSR_DATA__ ?? { programs: null, insights: null }
+delete window.__SSR_DATA__
 
 const container = document.getElementById('root')!
 const app = (
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ProgramsDataContext.Provider value={ssrData.programs}>
+        <InsightsDataContext.Provider value={ssrData.insights}>
+          <App />
+        </InsightsDataContext.Provider>
+      </ProgramsDataContext.Provider>
     </BrowserRouter>
   </StrictMode>
 )

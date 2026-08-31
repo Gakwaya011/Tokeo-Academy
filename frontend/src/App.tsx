@@ -7,6 +7,7 @@ import Loader from './components/Loader'
 import Home from './pages/Home'
 import About from './pages/About'
 import Programs from './pages/Programs'
+import ProgramModule from './pages/ProgramModule'
 import Insights from './pages/Insights'
 import InsightArticle from './pages/InsightArticle'
 import Contact from './pages/Contact'
@@ -41,6 +42,7 @@ function AppShell() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/programs" element={<Programs />} />
+          <Route path="/programs/:slug" element={<ProgramModule />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/contact" element={<Contact />} />

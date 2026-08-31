@@ -12,6 +12,7 @@ type Submission = {
   phone: string
   userType: string
   interestType: string
+  message: string | null
   status: 'NEW' | 'READ'
   createdAt: string
 }
@@ -160,6 +161,13 @@ export default function AdminMessages() {
                 Submitted {new Date(selected.createdAt).toLocaleString()}
               </p>
             </div>
+
+            {selected.message && (
+              <div className="flex flex-col gap-2 pt-4 border-t border-tokeo-navy/10">
+                <p className="text-xs font-semibold tracking-widest uppercase text-tokeo-navy/40">Message</p>
+                <p className="text-sm text-tokeo-navy/70 leading-relaxed whitespace-pre-wrap">{selected.message}</p>
+              </div>
+            )}
 
             {selected.status === 'NEW' && (
               <button

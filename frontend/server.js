@@ -14,6 +14,7 @@ const SSR_PATTERNS = [
   /^\/$/,
   /^\/about$/,
   /^\/programs$/,
+  /^\/programs\/[^/]+$/,
   /^\/insights$/,
   /^\/insights\/[^/]+$/,
   /^\/contact$/,
@@ -25,16 +26,32 @@ function isSsrPath(url) {
   return SSR_PATTERNS.some((re) => re.test(url.split('?')[0]))
 }
 
+// Escapes characters that could break out of the <script> tag or be
+// misread as markup, so embedded JSON can never smuggle in a script injection.
+function safeStringify(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026')
+}
+
 const template = await fs.readFile(path.resolve(__dirname, 'dist/client/index.html'), 'utf-8')
 const { render } = await import('./dist/server/entry-server.js')
 
 const app = express()
 app.use(express.static(path.resolve(__dirname, 'dist/client'), { index: false }))
 
-app.use((req, res) => {
+app.use(async (req, res) => {
   try {
-    const appHtml = isSsrPath(req.originalUrl) ? render(req.originalUrl) : ''
-    const html = template.replace('<!--ssr-outlet-->', appHtml)
+    let appHtml = ''
+    let dataScript = ''
+    if (isSsrPath(req.originalUrl)) {
+      const result = await render(req.originalUrl)
+      appHtml = result.html
+      if (result.data) {
+        dataScript = `<script>window.__SSR_DATA__=${safeStringify(result.data)}</script>`
+      }
+    }
+    const html = template
+      .replace('<!--ssr-outlet-->', appHtml)
+      .replace('</head>', `${dataScript}</head>`)
     res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
   } catch (e) {
     console.error(e.stack)

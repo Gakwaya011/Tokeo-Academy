@@ -62,8 +62,8 @@ export default function ProblemSolutionSection() {
           }`} style={{ transitionDelay: '460ms' }}>
             Most people already have the courses finished and the plan
             written. What they lack is the structure that keeps them
-            going after the motivation fades, and the accountability
-            that notices when they quietly stop.
+            going after the motivation fades — and a way to practice
+            execution until it actually holds.
           </p>
           <p className={`text-tokeo-navy/70 text-lg font-medium leading-relaxed relative z-10 mt-4 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
@@ -108,10 +108,10 @@ export default function ProblemSolutionSection() {
           <p className={`text-tokeo-navy/55 text-lg leading-relaxed relative z-10 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`} style={{ transitionDelay: '610ms' }}>
-            Tokeo plans one clear action a day, tracks it honestly, and
-            sends nudges before drift becomes a pattern. Execution
-            becomes a habit you repeat, not a decision you have to
-            remake every morning.
+            Tokeo treats execution as a set of skills you can train.
+            Each module pairs one capability with a Virtual Execution
+            Lab: you bring a real challenge and leave with a decision, a
+            plan, or a tool you can use — not just notes.
           </p>
         </div>
 

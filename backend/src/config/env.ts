@@ -14,6 +14,7 @@ const envSchema = z.object({
   FLUTTERWAVE_SECRET_HASH: z.string().min(1, 'FLUTTERWAVE_SECRET_HASH is required'),
   PROGRAM_PRICE_RWF: z.coerce.number().positive('PROGRAM_PRICE_RWF must be a positive number'),
   FRONTEND_URL: z.string().min(1, 'FRONTEND_URL is required'),
+  CLOUDINARY_URL: z.string().min(1, 'CLOUDINARY_URL is required'),
 })
 
 const parsed = envSchema.safeParse(process.env)

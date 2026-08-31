@@ -16,7 +16,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-transparent" />
         {/* Bottom vignette — grounds the section */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-      </div>
+      </div>                
 
       {/* ── Content ───────────────────────────────────────────── */}
       <div className="relative z-10 max-w-6xl mx-auto w-full px-6 md:px-12 lg:px-24 py-28">

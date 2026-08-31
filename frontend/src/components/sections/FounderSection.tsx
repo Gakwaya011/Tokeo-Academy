@@ -81,9 +81,9 @@ export default function FounderSection() {
             style={{ transitionDelay: '480ms' }}
           >
             The problem was never information. What I lacked was a
-            structure that held me accountable when motivation
-            inevitably ran out. Tokeo is that structure — a system built
-            around one premise: execution is a skill you build through
+            structure that turned what I learned into something
+            finished. Tokeo is that structure — a system built around
+            one premise: execution is a skill you build through
             repetition, not an attitude you summon through inspiration.
           </p>
 

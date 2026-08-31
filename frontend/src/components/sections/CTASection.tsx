@@ -57,8 +57,8 @@ export default function CTASection() {
           }`}
           style={{ transitionDelay: '260ms' }}
         >
-          The pilot cohort is opening soon, with limited spots to keep the
-          accountability structure tight. Join the waitlist to be first in
+          The pilot cohort is opening soon, with limited spots to keep each
+          Lab small enough to be useful. Join the waitlist to be first in
           line, or reach out if you want to partner with us.
         </p>
 

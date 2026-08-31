@@ -70,6 +70,7 @@ model ContactSubmission {
   phone        String
   userType     String
   interestType String
+  message      String?
   status       SubmissionStatus @default(NEW)
   createdAt    DateTime         @default(now())
 
@@ -79,4 +80,37 @@ model ContactSubmission {
 enum SubmissionStatus {
   NEW
   READ
+}
+
+model Program {
+  id            String   @id @default(uuid())
+  number        String
+  slug          String   @unique
+  title         String
+  tagline       String
+  challenge     String
+  artifact      String
+  quote         String
+  imageUrl      String?
+  imagePublicId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("programs")
+}
+
+model Insight {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  category      String
+  title         String
+  excerpt       String
+  body          String[]
+  imageUrl      String?
+  imagePublicId String?
+  imageFocus    String   @default("center")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("insights")
 }

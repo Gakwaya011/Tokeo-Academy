@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Phone, Mail, Clock, Send } from 'lucide-react'
 import Button from '../ui/Button'
 import { apiRequest } from '../../lib/api'
+import { trackEvent } from '../../lib/analytics'
 
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -23,10 +24,19 @@ type FormData = {
   name: string
   email: string
   phone: string
+  userType: string
   message: string
 }
 
-const initialForm: FormData = { name: '', email: '', phone: '', message: '' }
+const initialForm: FormData = { name: '', email: '', phone: '', userType: '', message: '' }
+
+const userTypes = [
+  { value: 'learner', label: 'Learner / student' },
+  { value: 'entrepreneur', label: 'Entrepreneur / founder' },
+  { value: 'manager', label: 'Manager / team lead' },
+  { value: 'organization', label: 'Employer / institution' },
+  { value: 'partner', label: 'Potential partner' },
+]
 
 const contactItems = [
   {
@@ -66,6 +76,7 @@ export default function ContactSection() {
         method: 'POST',
         body: JSON.stringify(form),
       })
+      trackEvent('contact_submit', { user_type: form.userType })
       setSubmitted(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -156,8 +167,9 @@ export default function ContactSection() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className={labelClass}>Your Name</label>
+                  <label htmlFor="cs-name" className={labelClass}>Your Name</label>
                   <input
+                    id="cs-name"
                     type="text"
                     required
                     value={form.name}
@@ -167,8 +179,9 @@ export default function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Your Email</label>
+                  <label htmlFor="cs-email" className={labelClass}>Your Email</label>
                   <input
+                    id="cs-email"
                     type="email"
                     required
                     value={form.email}
@@ -179,20 +192,38 @@ export default function ContactSection() {
                 </div>
               </div>
 
-              <div>
-                <label className={labelClass}>Phone Number</label>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  placeholder="+250..."
-                  className={inputClass}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="cs-phone" className={labelClass}>Phone Number</label>
+                  <input
+                    id="cs-phone"
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="+250..."
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cs-usertype" className={labelClass}>I am a</label>
+                  <select
+                    id="cs-usertype"
+                    value={form.userType}
+                    onChange={(e) => handleChange('userType', e.target.value)}
+                    className={`${inputClass} appearance-none`}
+                  >
+                    <option value="" className="bg-tokeo-navy">Select one (optional)</option>
+                    {userTypes.map(({ value, label }) => (
+                      <option key={value} value={value} className="bg-tokeo-navy">{label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className={labelClass}>Message</label>
+                <label htmlFor="cs-message" className={labelClass}>Message</label>
                 <textarea
+                  id="cs-message"
                   required
                   rows={5}
                   value={form.message}

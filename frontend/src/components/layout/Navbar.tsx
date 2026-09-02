@@ -81,6 +81,7 @@ export default function Navbar() {
                   scrolled ? 'bg-tokeo-navy text-tokeo-cream' : 'bg-tokeo-cream text-tokeo-navy'
                 }`}
                 aria-label="Account menu"
+                aria-expanded={accountOpen}
               >
                 {initials(user.name)}
               </button>
@@ -124,6 +125,7 @@ export default function Navbar() {
           className={`md:hidden p-1 transition-colors duration-300 ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
+          aria-expanded={open}
         >
           <div className={`w-5 h-[1.5px] bg-current transition-all duration-300 ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
           <div className={`w-5 h-[1.5px] bg-current my-[5px] transition-all duration-300 ${open ? 'opacity-0 scale-x-0' : ''}`} />

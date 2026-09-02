@@ -51,6 +51,7 @@ export default function InsightArticle() {
           <img
             src={imageUrl}
             alt=""
+            decoding="async"
             style={{ objectPosition: imageFocus }}
             className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-xl shadow-tokeo-navy/10"
           />

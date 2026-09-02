@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { ProgramsDataContext } from './context/ProgramsDataContext'
 import { InsightsDataContext } from './context/InsightsDataContext'
 import { API_URL } from './lib/api'
+import { resolveMeta } from './lib/seo'
 import type { Program } from './types/program'
 import type { Insight } from './types/insight'
 
@@ -51,5 +52,7 @@ export async function render(url: string) {
     </StrictMode>,
   )
 
-  return { html, data: { programs, insights } }
+  const head = resolveMeta(path, { programs, insights })
+
+  return { html, data: { programs, insights }, head }
 }

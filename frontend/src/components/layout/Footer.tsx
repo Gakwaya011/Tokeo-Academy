@@ -26,8 +26,13 @@ export default function Footer() {
           {/* Brand column */}
           <div className="flex flex-col gap-6">
             <img src={logoGoldDark} alt="Tokeo Academy" className="h-8 w-auto self-start" />
-            <p className="text-tokeo-cream/35 text-sm leading-relaxed max-w-[200px]">
-              A cohort-based platform for people serious about follow-through.
+            <p className="text-tokeo-cream/35 text-sm leading-relaxed max-w-[220px]">
+              An execution curriculum for professionals, entrepreneurs and
+              teams — turning what you know into what you consistently do.
+            </p>
+            <p className="text-tokeo-cream/25 text-xs leading-relaxed max-w-[220px]">
+              Tokeo Academy · Kigali, Rwanda. Built on the competency-based
+              approach: applied skill over recall.
             </p>
           </div>
 
@@ -65,7 +70,6 @@ export default function Footer() {
               {[
                 { label: 'tokeoacademy@gmail.com', href: 'mailto:tokeoacademy@gmail.com' },
                 { label: '+250 788 495 519',       href: 'tel:+250788495519' },
-                { label: 'Kigali, Rwanda',         href: '#' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a
@@ -76,6 +80,7 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              <li className="text-tokeo-cream/40 text-sm">Kigali, Rwanda</li>
             </ul>
           </div>
 

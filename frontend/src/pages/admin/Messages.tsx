@@ -77,6 +77,7 @@ export default function AdminMessages() {
                   <tr className="bg-tokeo-navy/[0.03] text-left text-xs font-semibold tracking-wide uppercase text-tokeo-navy/40">
                     <th className="px-5 py-3 font-semibold">Name</th>
                     <th className="px-5 py-3 font-semibold">Contact</th>
+                    <th className="px-5 py-3 font-semibold">Segment</th>
                     <th className="px-5 py-3 font-semibold">Interested in</th>
                     <th className="px-5 py-3 font-semibold">Status</th>
                     <th className="px-5 py-3 font-semibold">Date</th>
@@ -100,6 +101,7 @@ export default function AdminMessages() {
                         </div>
                       </td>
                       <td className="px-5 py-4 text-tokeo-navy/55">{s.email}</td>
+                      <td className="px-5 py-4 text-tokeo-navy/55 capitalize">{s.userType}</td>
                       <td className="px-5 py-4 text-tokeo-navy/55">{s.interestType}</td>
                       <td className="px-5 py-4">
                         <span

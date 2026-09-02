@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.tsx'
 import { ProgramsDataContext } from './context/ProgramsDataContext'
 import { InsightsDataContext } from './context/InsightsDataContext'
+import { initAnalytics } from './lib/analytics'
 import type { Program } from './types/program'
 import type { Insight } from './types/insight'
 
@@ -41,3 +42,5 @@ if (container.children.length > 0) {
 } else {
   createRoot(container).render(app)
 }
+
+initAnalytics()

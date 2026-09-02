@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { trackPageView, initScrollDepth } from './lib/analytics'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Loader from './components/Loader'
+import CookieNotice from './components/CookieNotice'
 import Home from './pages/Home'
 import About from './pages/About'
 import Programs from './pages/Programs'
@@ -29,6 +31,14 @@ const AUTH_ROUTES = ['/login', '/signup', '/forgot-password']
 
 function AppShell() {
   const location = useLocation()
+
+  // GA4 SPA tracking: one page_view per route, scroll-depth re-armed each time.
+  useEffect(() => {
+    trackPageView(location.pathname + location.search)
+    const teardown = initScrollDepth()
+    return teardown
+  }, [location.pathname, location.search])
+
   const isAuthRoute = AUTH_ROUTES.includes(location.pathname)
   const isAdminRoute = location.pathname.startsWith('/admin')
   const isPlatformRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/payment')
@@ -88,6 +98,7 @@ function AppShell() {
         </Routes>
       </main>
       {!hideChrome && <Footer />}
+      <CookieNotice />
     </>
   )
 }

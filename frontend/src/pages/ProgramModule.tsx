@@ -34,7 +34,7 @@ export default function ProgramModule() {
       <section className="relative w-full bg-tokeo-navy px-6 pt-32 pb-20 md:px-12 lg:px-24 overflow-hidden">
         {imageUrl && (
           <>
-            <img src={imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <img src={imageUrl} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-tokeo-navy/85" />
           </>
         )}

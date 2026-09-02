@@ -7,7 +7,13 @@ export default function Hero() {
 
       {/* ── Background ────────────────────────────────────────── */}
       <div className="absolute inset-0">
-        <img src={heroImg} alt="" className="w-full h-full object-cover object-center" />
+        <img
+          src={heroImg}
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+          className="w-full h-full object-cover object-center"
+        />
         {/* Base darkening */}
         <div className="absolute inset-0 bg-black/35" />
         {/* Left shadow — where the text lives */}

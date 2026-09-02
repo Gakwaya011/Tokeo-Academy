@@ -16,4 +16,13 @@
   body {
     @apply bg-tokeo-navy text-tokeo-cream font-sans antialiased;
   }
+
+  /* Visible keyboard focus for every interactive element. Uses gold with a
+     contrasting offset so it reads on both navy and light sections. Mouse
+     clicks don't trigger :focus-visible, so this stays keyboard-only. */
+  :focus-visible {
+    outline: 2px solid var(--color-tokeo-gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }

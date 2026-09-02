@@ -1,4 +1,5 @@
 import type { ButtonProps } from '../../types'
+import { trackEvent } from '../../lib/analytics'
 
 export default function Button({
   children,
@@ -27,7 +28,22 @@ export default function Button({
   const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`
 
   if (href) {
-    return <a href={href} className={classes}>{children}</a>
+    const label = typeof children === 'string' ? children : href
+    return (
+      <a
+        href={href}
+        className={classes}
+        onClick={() => {
+          trackEvent('cta_click', {
+            label,
+            href,
+            path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+          })
+        }}
+      >
+        {children}
+      </a>
+    )
   }
 
   return (

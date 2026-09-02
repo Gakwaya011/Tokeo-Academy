@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Button from '../components/ui/Button'
 import { apiRequest } from '../lib/api'
+import { trackEvent } from '../lib/analytics'
 
 type FormData = {
   name: string
@@ -19,15 +20,17 @@ const initialForm: FormData = {
 }
 
 const userTypes = [
-  { value: 'student', label: 'Student' },
-  { value: 'professional', label: 'Professional' },
-  { value: 'educator', label: 'Educator' },
-  { value: 'partner', label: 'Potential Partner' },
+  { value: 'learner', label: 'Learner / student' },
+  { value: 'entrepreneur', label: 'Entrepreneur / founder' },
+  { value: 'manager', label: 'Manager / team lead' },
+  { value: 'organization', label: 'Employer / institution' },
+  { value: 'partner', label: 'Potential partner' },
 ]
 
 const interestTypes = [
   { value: 'waitlist', label: 'Joining the waitlist' },
-  { value: 'pilot', label: 'The pilot program' },
+  { value: 'pilot', label: 'The pilot cohort' },
+  { value: 'team', label: 'Bringing Tokeo to a team' },
   { value: 'partnership', label: 'A partnership' },
 ]
 
@@ -50,6 +53,7 @@ export default function Contact() {
         method: 'POST',
         body: JSON.stringify(form),
       })
+      trackEvent('waitlist_submit', { user_type: form.userType, interest_type: form.interestType })
       setSubmitted(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -142,6 +146,7 @@ export default function Contact() {
                   <input
                     type="text"
                     required
+                    aria-label="Full name"
                     value={form.name}
                     onChange={(e) => handleChange('name', e.target.value)}
                     placeholder="Full name"
@@ -150,6 +155,7 @@ export default function Contact() {
                   <input
                     type="email"
                     required
+                    aria-label="Email address"
                     value={form.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     placeholder="Email address"
@@ -158,6 +164,7 @@ export default function Contact() {
                   <input
                     type="tel"
                     required
+                    aria-label="Phone or WhatsApp number"
                     value={form.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     placeholder="Phone / WhatsApp"
@@ -167,13 +174,14 @@ export default function Contact() {
                 </div>
 
                 {/* User type — pill selector */}
-                <div className="flex flex-col gap-3">
-                  <p className="text-tokeo-navy/40 text-sm tracking-wide">I am a</p>
+                <div className="flex flex-col gap-3" role="group" aria-label="I am a">
+                  <p className="text-tokeo-navy/40 text-sm tracking-wide">I am a <span className="text-tokeo-gold/70">*</span></p>
                   <div className="flex flex-wrap gap-2">
                     {userTypes.map(({ value, label }) => (
                       <button
                         key={value}
                         type="button"
+                        aria-pressed={form.userType === value}
                         onClick={() => handleChange('userType', value)}
                         className={`px-4 py-2 text-sm border transition-colors ${
                           form.userType === value
@@ -188,13 +196,14 @@ export default function Contact() {
                 </div>
 
                 {/* Interest type — pill selector */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3" role="group" aria-label="I'm interested in">
                   <p className="text-tokeo-navy/40 text-sm tracking-wide">I'm interested in</p>
                   <div className="flex flex-wrap gap-2">
                     {interestTypes.map(({ value, label }) => (
                       <button
                         key={value}
                         type="button"
+                        aria-pressed={form.interestType === value}
                         onClick={() => handleChange('interestType', value)}
                         className={`px-4 py-2 text-sm border transition-colors ${
                           form.interestType === value
@@ -208,7 +217,7 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-fit mt-2" disabled={loading}>
+                <Button type="submit" size="lg" className="w-fit mt-2" disabled={loading || !form.userType}>
                   {loading ? 'Submitting...' : 'Submit Application'}
                 </Button>
 

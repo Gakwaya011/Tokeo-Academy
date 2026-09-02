@@ -58,7 +58,7 @@ export default function Insights() {
               >
                 <div className="relative h-44 bg-tokeo-navy/5">
                   {imageUrl && (
-                    <img src={imageUrl} alt="" style={{ objectPosition: imageFocus }} className="w-full h-full object-cover" />
+                    <img src={imageUrl} alt="" loading="lazy" decoding="async" style={{ objectPosition: imageFocus }} className="w-full h-full object-cover" />
                   )}
                   <span className="absolute top-4 left-4 text-[0.65rem] font-bold tracking-widest uppercase text-tokeo-navy bg-white/90 px-3 py-1 rounded-full">
                     {category}

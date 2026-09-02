@@ -36,7 +36,9 @@ export default function FounderSection() {
           <div className="aspect-[4/5] w-full bg-tokeo-offwhite/5 border border-white/10 relative overflow-hidden">
             <img
               src={founderPhoto}
-              alt="Founder of Tokeo Academy"
+              alt="Léonce Ngaboyakema, founder of Tokeo Academy"
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
@@ -60,7 +62,7 @@ export default function FounderSection() {
             }`}
             style={{ transitionDelay: '250ms' }}
           >
-            Built by someone who lived the gap.
+            Built by someone who runs execution at scale.
           </h2>
 
           <p
@@ -69,9 +71,10 @@ export default function FounderSection() {
             }`}
             style={{ transitionDelay: '370ms' }}
           >
-            I spent years collecting knowledge I never used. Courses
-            finished and forgotten, plans written and abandoned by the
-            second week.
+            Léonce Ngaboyakema founded Tokeo Academy after more than a
+            decade turning strategy into results — most recently as
+            Managing Director of One Acre Fund's Rwanda program, serving
+            over a million farmers.
           </p>
 
           <p
@@ -80,11 +83,10 @@ export default function FounderSection() {
             }`}
             style={{ transitionDelay: '480ms' }}
           >
-            The problem was never information. What I lacked was a
-            structure that turned what I learned into something
-            finished. Tokeo is that structure — a system built around
-            one premise: execution is a skill you build through
-            repetition, not an attitude you summon through inspiration.
+            The same pattern showed up everywhere he worked: the
+            constraint is rarely ideas or ambition. It is the habits,
+            systems and discipline to act on what you already know.
+            Tokeo is built to close that gap.
           </p>
 
         </div>

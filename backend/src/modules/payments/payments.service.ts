@@ -77,10 +77,21 @@ export async function initializePayment(userId: string) {
 // and no-ops. Keyed on tx_ref (ours), cross-checked against Flutterwave's
 // own record for that transaction_id so a caller can't point us at a
 // transaction that isn't the one it claims to be.
-export async function confirmTransaction(transactionId: string, expectedTxRef: string) {
+export async function confirmTransaction(
+  transactionId: string,
+  expectedTxRef: string,
+  ownerUserId?: string,
+) {
   const payment = await prisma.payment.findUnique({ where: { txRef: expectedTxRef } })
   if (!payment) {
     throw new AppError('Payment not found', 404)
+  }
+
+  // For the user-facing /verify path: refuse before any external call or DB
+  // write if the caller doesn't own this payment. The webhook path trusts the
+  // signature instead and passes no ownerUserId.
+  if (ownerUserId && payment.userId !== ownerUserId) {
+    throw new AppError('This payment does not belong to your account', 403)
   }
 
   if (payment.status === 'SUCCESSFUL') {

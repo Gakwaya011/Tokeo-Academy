@@ -4,7 +4,13 @@ import { createSubmissionSchema } from './contact.schema'
 import * as contactService from './contact.service'
 
 export const createSubmissionHandler = asyncHandler(async (req: Request, res: Response) => {
-  const input = createSubmissionSchema.parse(req.body)
+  const { website, ...input } = createSubmissionSchema.parse(req.body)
+
+  // Honeypot tripped — pretend it worked so the bot doesn't learn anything.
+  if (website && website.trim().length > 0) {
+    return res.status(201).json({ submission: null })
+  }
+
   const submission = await contactService.createSubmission(input)
   res.status(201).json({ submission })
 })

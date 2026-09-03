@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { requireAdmin, requireAuth } from '../../middleware/requireAuth'
+import { contactLimiter } from '../../middleware/rateLimit'
 import {
   createSubmissionHandler,
   listSubmissionsHandler,
@@ -9,7 +10,7 @@ import {
 export const contactRouter = Router()
 
 // Public — anyone submitting the Contact page form
-contactRouter.post('/', createSubmissionHandler)
+contactRouter.post('/', contactLimiter, createSubmissionHandler)
 
 // Admin-only — the dashboard reading submissions
 contactRouter.get('/', requireAuth, requireAdmin, listSubmissionsHandler)

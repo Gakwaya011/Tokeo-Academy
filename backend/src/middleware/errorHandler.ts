@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from 'express'
+import { MulterError } from 'multer'
 import { ZodError } from 'zod'
 import { AppError } from '../utils/AppError'
 
-export function notFoundHandler(req: Request, res: Response) {
-  console.warn(`No route for ${req.method} ${req.path}`)
+export function notFoundHandler(_req: Request, res: Response) {
   res.status(404).json({ error: 'Not found' })
 }
 
@@ -15,6 +15,13 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
 
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({ error: err.message })
+  }
+
+  // Multer rejects (file too large, unexpected field, wrong type) — client errors, not 500s.
+  if (err instanceof MulterError) {
+    const message =
+      err.code === 'LIMIT_FILE_SIZE' ? 'Image must be 5 MB or smaller.' : 'Image upload was rejected.'
+    return res.status(400).json({ error: message })
   }
 
   console.error(err)

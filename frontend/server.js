@@ -1,7 +1,9 @@
+import crypto from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
+import helmet from 'helmet'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const port = process.env.PORT || 5174
@@ -56,6 +58,46 @@ const template = await fs.readFile(path.resolve(__dirname, 'dist/client/index.ht
 const { render } = await import('./dist/server/entry-server.js')
 
 const app = express()
+
+app.disable('x-powered-by')
+
+// Per-request nonce for the one inline script we emit (the SSR data blob),
+// so the CSP below can forbid all other inline script.
+app.use((req, res, next) => {
+  res.locals.nonce = crypto.randomBytes(16).toString('base64')
+  next()
+})
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        frameAncestors: ["'none'"],
+        objectSrc: ["'none'"],
+        formAction: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          (req, res) => `'nonce-${res.locals.nonce}'`,
+          'https://www.googletagmanager.com',
+          'https://www.google-analytics.com',
+        ],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+        // Lenient on connect/img hosts (GA + Cloudinary + the API, whose
+        // origin varies by deploy); strict where it matters (script, frame).
+        connectSrc: ["'self'", 'https:'],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+    hsts: { maxAge: 15552000, includeSubDomains: true },
+  }),
+)
+
 app.use(express.static(path.resolve(__dirname, 'dist/client'), { index: false }))
 
 app.use(async (req, res) => {
@@ -68,7 +110,7 @@ app.use(async (req, res) => {
       appHtml = result.html
       head = result.head
       if (result.data) {
-        dataScript = `<script>window.__SSR_DATA__=${safeStringify(result.data)}</script>`
+        dataScript = `<script nonce="${res.locals.nonce}">window.__SSR_DATA__=${safeStringify(result.data)}</script>`
       }
     }
     let html = template.replace('<!--ssr-outlet-->', appHtml)

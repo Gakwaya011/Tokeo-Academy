@@ -27,11 +27,11 @@ export const initializePaymentHandler = asyncHandler(async (req: Request, res: R
 export const verifyPaymentHandler = asyncHandler(async (req: Request, res: Response) => {
   if (!req.auth) throw new AppError('Authentication required', 401)
   const input = verifyPaymentSchema.parse(req.body)
-  const result = await paymentsService.confirmTransaction(input.transaction_id, input.tx_ref)
-
-  if (result.payment.userId !== req.auth.userId) {
-    throw new AppError('This payment does not belong to your account', 403)
-  }
+  const result = await paymentsService.confirmTransaction(
+    input.transaction_id,
+    input.tx_ref,
+    req.auth.userId,
+  )
 
   res.status(200).json({ status: result.payment.status })
 })

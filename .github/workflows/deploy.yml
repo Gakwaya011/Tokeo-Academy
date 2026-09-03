@@ -52,6 +52,7 @@ jobs:
             
             echo "--- Pulling latest code ---"
             cd /var/www/tokeo-academy
+            git remote set-url origin git@github.com:Gakwaya011/Tokeo-Academy.git
             git fetch origin main
             git reset --hard origin/main
             

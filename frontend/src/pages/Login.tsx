@@ -1,25 +1,28 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import AuthLayout from '../components/auth/AuthLayout'
 import GoogleButton from '../components/auth/GoogleButton'
 import { useAuth } from '../context/AuthContext'
+import { API_URL } from '../lib/api'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [formError, setFormError] = useState('')
+  const [formError, setFormError] = useState(
+    searchParams.get('error') === 'google' ? "Google sign-in didn't complete. Try again or use your email." : '',
+  )
   const [loading, setLoading] = useState(false)
-  const [googleNote, setGoogleNote] = useState(false)
 
   function validate(): boolean {
     const next: Record<string, string> = {}
@@ -50,10 +53,7 @@ export default function Login() {
       <h1 className="text-3xl font-bold text-tokeo-navy tracking-tight text-center">Welcome back</h1>
       <p className="text-tokeo-navy/50 mt-2 mb-8 text-center">Log in to continue your journey.</p>
 
-      <GoogleButton onClick={() => setGoogleNote(true)} />
-      {googleNote && (
-        <p className="text-xs text-tokeo-navy/40 mt-2">Google sign-in is coming soon — use email for now.</p>
-      )}
+      <GoogleButton onClick={() => { window.location.href = `${API_URL}/api/auth/google` }} />
 
       <div className="flex items-center gap-3 my-6">
         <div className="h-px flex-1 bg-tokeo-navy/10" />

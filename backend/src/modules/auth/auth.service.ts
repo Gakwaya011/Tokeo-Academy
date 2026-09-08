@@ -36,6 +36,12 @@ export async function login(input: LoginInput) {
     throw new AppError('Incorrect email or password.', 401)
   }
 
+  // Accounts created via Google have no password hash — steer them back to
+  // the Google button rather than leaking that the email exists.
+  if (!user.passwordHash) {
+    throw new AppError('Incorrect email or password.', 401)
+  }
+
   const valid = await comparePassword(input.password, user.passwordHash)
   if (!valid) {
     throw new AppError('Incorrect email or password.', 401)
@@ -43,6 +49,22 @@ export async function login(input: LoginInput) {
 
   const token = signAccessToken({ sub: user.id, role: user.role })
   return { user: await toPublicUser(user), token }
+}
+
+// Google sign-in: match on verified email. First-time Google users get a
+// USER account with an empty passwordHash (password login stays disabled
+// for them until they set one). Role is never elevated here — admin is
+// assigned manually in the DB.
+export async function findOrCreateGoogleUser(input: { email: string; name: string }) {
+  const existing = await prisma.user.findUnique({ where: { email: input.email } })
+  if (existing) {
+    return { id: existing.id, name: existing.name, email: existing.email, role: existing.role }
+  }
+
+  const user = await prisma.user.create({
+    data: { name: input.name, email: input.email, passwordHash: '' },
+  })
+  return { id: user.id, name: user.name, email: user.email, role: user.role }
 }
 
 export async function getUserById(id: string) {

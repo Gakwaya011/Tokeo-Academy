@@ -15,6 +15,9 @@ const envSchema = z.object({
   PROGRAM_PRICE_RWF: z.coerce.number().positive('PROGRAM_PRICE_RWF must be a positive number'),
   FRONTEND_URL: z.string().min(1, 'FRONTEND_URL is required'),
   CLOUDINARY_URL: z.string().min(1, 'CLOUDINARY_URL is required'),
+  GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required'),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required'),
+  GOOGLE_CALLBACK_URL: z.string().min(1, 'GOOGLE_CALLBACK_URL is required'),
 })
 
 const parsed = envSchema.safeParse(process.env)

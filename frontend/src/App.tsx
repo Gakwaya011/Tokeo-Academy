@@ -16,6 +16,7 @@ import Contact from './pages/Contact'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import ForgotPassword from './pages/ForgotPassword'
+import AuthCallback from './pages/AuthCallback'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
@@ -27,7 +28,7 @@ import RequireEnrollment from './components/payments/RequireEnrollment'
 import PaymentVerify from './pages/PaymentVerify'
 import Dashboard from './pages/Dashboard'
 
-const AUTH_ROUTES = ['/login', '/signup', '/forgot-password']
+const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/auth/callback']
 
 function AppShell() {
   const location = useLocation()
@@ -59,6 +60,7 @@ function AppShell() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/payment/verify" element={<PaymentVerify />} />

@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import { verifyAccessToken } from '../utils/jwt'
 import { AppError } from '../utils/AppError'
+import { SESSION_COOKIE_NAME } from '../utils/cookies'
 
 declare global {
   namespace Express {
@@ -11,8 +12,11 @@ declare global {
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  // httpOnly cookie is the primary transport; a Bearer header still works
+  // too (kept for API clients other than the browser SPA).
   const header = req.headers.authorization
-  const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined
+  const headerToken = header?.startsWith('Bearer ') ? header.slice(7) : undefined
+  const token = req.cookies?.[SESSION_COOKIE_NAME] ?? headerToken
 
   if (!token) {
     return next(new AppError('Authentication required', 401))

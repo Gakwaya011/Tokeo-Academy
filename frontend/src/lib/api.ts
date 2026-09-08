@@ -2,22 +2,6 @@
 // would otherwise double up with the leading slash on each path and 404 on every request.
 export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '')
 
-const TOKEN_KEY = 'tokeo_token'
-
-export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
-}
-
-export function storeToken(token: string, remember: boolean) {
-  const store = remember ? localStorage : sessionStorage
-  store.setItem(TOKEN_KEY, token)
-}
-
-export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY)
-  sessionStorage.removeItem(TOKEN_KEY)
-}
-
 const GENERIC_ERROR = 'Something went wrong. Please try again.'
 
 // A handful of backend error messages are safe and useful to show as-is
@@ -25,15 +9,16 @@ const GENERIC_ERROR = 'Something went wrong. Please try again.'
 // routing/500s, unexpected shapes — should never surface raw to the user;
 // the real detail still goes to the console for us to debug.
 export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getToken()
-
   let res: Response
   try {
     res = await fetch(`${API_URL}${path}`, {
       ...options,
+      // Session lives in an httpOnly cookie set by the API — this is what
+      // makes the browser actually send/accept it (needed cross-origin,
+      // harmless same-origin).
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
     })
@@ -56,15 +41,13 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
 // For multipart/form-data uploads (e.g. admin forms with an image file) —
 // Content-Type is intentionally left unset so the browser adds the boundary.
 export async function apiUpload<T>(path: string, formData: FormData, options: RequestInit = {}): Promise<T> {
-  const token = getToken()
-
   let res: Response
   try {
     res = await fetch(`${API_URL}${path}`, {
       method: 'POST',
       ...options,
+      credentials: 'include',
       headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
       body: formData,

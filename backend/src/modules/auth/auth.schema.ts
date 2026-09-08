@@ -9,6 +9,7 @@ export const signupSchema = z.object({
 export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address').max(200),
   password: z.string().min(1, 'Password is required').max(200),
+  remember: z.boolean().optional().default(false),
 })
 
 export type SignupInput = z.infer<typeof signupSchema>

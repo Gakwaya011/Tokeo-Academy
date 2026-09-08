@@ -5,6 +5,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import AuthLayout from '../components/auth/AuthLayout'
 import GoogleButton from '../components/auth/GoogleButton'
 import { useAuth } from '../context/AuthContext'
+import { API_URL } from '../lib/api'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -20,7 +21,6 @@ export default function Signup() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [formError, setFormError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [googleNote, setGoogleNote] = useState(false)
 
   function validate(): boolean {
     const next: Record<string, string> = {}
@@ -60,10 +60,7 @@ export default function Signup() {
       <h1 className="text-3xl font-bold text-tokeo-navy tracking-tight text-center">Create your account</h1>
       <p className="text-tokeo-navy/50 mt-2 mb-8 text-center">Start your accountability journey.</p>
 
-      <GoogleButton onClick={() => setGoogleNote(true)} />
-      {googleNote && (
-        <p className="text-xs text-tokeo-navy/40 mt-2">Google sign-in is coming soon — use email for now.</p>
-      )}
+      <GoogleButton onClick={() => { window.location.href = `${API_URL}/api/auth/google` }} />
 
       <div className="flex items-center gap-3 my-6">
         <div className="h-px flex-1 bg-tokeo-navy/10" />

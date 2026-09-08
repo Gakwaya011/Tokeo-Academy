@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { apiRequest, clearToken, getToken, storeToken } from '../lib/api'
+import { apiRequest } from '../lib/api'
 
 interface User {
   id: string
@@ -27,37 +27,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!getToken()) {
-      setLoading(false)
-      return
-    }
+    // The session lives in an httpOnly cookie, invisible to JS, so the only
+    // way to know if one exists is to ask the API. A 401 here just means
+    // "not logged in" — not an error worth surfacing.
     apiRequest<{ user: User }>('/api/auth/me')
       .then(({ user }) => setUser(user))
-      .catch(() => clearToken())
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
   const login = async (email: string, password: string, remember: boolean) => {
-    const { user, token } = await apiRequest<{ user: User; token: string }>('/api/auth/login', {
+    const { user } = await apiRequest<{ user: User }>('/api/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember }),
     })
-    storeToken(token, remember)
     setUser(user)
   }
 
   const signup = async (name: string, email: string, password: string) => {
-    const { user, token } = await apiRequest<{ user: User; token: string }>('/api/auth/signup', {
+    const { user } = await apiRequest<{ user: User }>('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     })
-    storeToken(token, true)
     setUser(user)
   }
 
   const logout = () => {
     setUser(null)
-    clearToken()
+    // Best-effort — the local state is already cleared, so the UI updates
+    // instantly regardless of whether this request succeeds.
+    apiRequest('/api/auth/logout', { method: 'POST' }).catch(() => {})
   }
 
   const requestPasswordReset = async (email: string) => {

@@ -9,7 +9,6 @@ type FormData = {
   phone: string
   userType: string
   interestType: string
-  website: string // honeypot — must stay empty
 }
 
 const initialForm: FormData = {
@@ -18,7 +17,6 @@ const initialForm: FormData = {
   phone: '',
   userType: '',
   interestType: '',
-  website: '',
 }
 
 const userTypes = [
@@ -139,17 +137,6 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-
-                {/* Honeypot — hidden from people, catnip for bots */}
-                <input
-                  type="text"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  aria-hidden="true"
-                  value={form.website}
-                  onChange={(e) => handleChange('website', e.target.value)}
-                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
-                />
 
                 {error && (
                   <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>

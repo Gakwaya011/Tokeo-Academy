@@ -159,7 +159,7 @@ export default function ContactSection() {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form action="/api/contact" method="POST" onSubmit={handleSubmit} className="flex flex-col gap-5">
 
               {error && (
                 <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</div>
@@ -170,6 +170,8 @@ export default function ContactSection() {
                   <label htmlFor="cs-name" className={labelClass}>Your Name</label>
                   <input
                     id="cs-name"
+                    name="name"
+                    autoComplete="name"
                     type="text"
                     required
                     value={form.name}
@@ -182,6 +184,8 @@ export default function ContactSection() {
                   <label htmlFor="cs-email" className={labelClass}>Your Email</label>
                   <input
                     id="cs-email"
+                    name="email"
+                    autoComplete="email"
                     type="email"
                     required
                     value={form.email}
@@ -197,6 +201,8 @@ export default function ContactSection() {
                   <label htmlFor="cs-phone" className={labelClass}>Phone Number</label>
                   <input
                     id="cs-phone"
+                    name="phone"
+                    autoComplete="tel"
                     type="tel"
                     value={form.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
@@ -208,6 +214,7 @@ export default function ContactSection() {
                   <label htmlFor="cs-usertype" className={labelClass}>I am a</label>
                   <select
                     id="cs-usertype"
+                    name="userType"
                     value={form.userType}
                     onChange={(e) => handleChange('userType', e.target.value)}
                     className={`${inputClass} appearance-none`}
@@ -224,6 +231,7 @@ export default function ContactSection() {
                 <label htmlFor="cs-message" className={labelClass}>Message</label>
                 <textarea
                   id="cs-message"
+                  name="message"
                   required
                   rows={5}
                   value={form.message}

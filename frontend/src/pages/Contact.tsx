@@ -136,7 +136,7 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+              <form action="/api/contact" method="POST" onSubmit={handleSubmit} className="flex flex-col gap-10">
 
                 {error && (
                   <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>
@@ -145,6 +145,8 @@ export default function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                   <input
                     type="text"
+                    name="name"
+                    autoComplete="name"
                     required
                     aria-label="Full name"
                     value={form.name}
@@ -154,6 +156,8 @@ export default function Contact() {
                   />
                   <input
                     type="email"
+                    name="email"
+                    autoComplete="email"
                     required
                     aria-label="Email address"
                     value={form.email}
@@ -163,6 +167,8 @@ export default function Contact() {
                   />
                   <input
                     type="tel"
+                    name="phone"
+                    autoComplete="tel"
                     required
                     aria-label="Phone or WhatsApp number"
                     value={form.phone}
@@ -176,6 +182,9 @@ export default function Contact() {
                 {/* User type — pill selector */}
                 <div className="flex flex-col gap-3" role="group" aria-label="I am a">
                   <p className="text-tokeo-navy/40 text-sm tracking-wide">I am a <span className="text-tokeo-gold/70">*</span></p>
+                  
+                  <input type="hidden" name="userType" value={form.userType} />
+                  
                   <div className="flex flex-wrap gap-2">
                     {userTypes.map(({ value, label }) => (
                       <button
@@ -198,6 +207,9 @@ export default function Contact() {
                 {/* Interest type — pill selector */}
                 <div className="flex flex-col gap-3" role="group" aria-label="I'm interested in">
                   <p className="text-tokeo-navy/40 text-sm tracking-wide">I'm interested in</p>
+                  
+                  <input type="hidden" name="interestType" value={form.interestType} />
+                  
                   <div className="flex flex-wrap gap-2">
                     {interestTypes.map(({ value, label }) => (
                       <button

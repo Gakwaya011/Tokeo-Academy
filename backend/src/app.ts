@@ -9,7 +9,7 @@ import { globalLimiter } from './middleware/rateLimit'
 import { authRouter } from './modules/auth/auth.routes'
 import { contactRouter } from './modules/contact/contact.routes'
 import { insightsRouter } from './modules/insights/insights.routes'
-import { paymentsRouter } from './modules/payments/payments.routes'
+// import { paymentsRouter } from './modules/payments/payments.routes'
 import { programsRouter } from './modules/programs/programs.routes'
 
 export const app = express()
@@ -40,7 +40,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRouter)
 app.use('/api/contact', contactRouter)
-app.use('/api/payments', paymentsRouter)
+// app.use('/api/payments', paymentsRouter)
 app.use('/api/programs', programsRouter)
 app.use('/api/insights', insightsRouter)
 

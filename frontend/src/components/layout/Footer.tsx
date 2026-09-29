@@ -42,12 +42,12 @@ export default function Footer() {
               <h4 className="text-[0.6rem] font-bold tracking-[0.2em] uppercase text-tokeo-gold">
                 {group}
               </h4>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-1">
                 {links.map(({ label, href }) => (
                   <li key={label}>
                     <a
                       href={href}
-                      className="group flex items-center gap-1 text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
+                      className="group flex items-center min-h-[44px] gap-1 text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
                     >
                       {label}
                       <ArrowUpRight
@@ -66,7 +66,7 @@ export default function Footer() {
             <h4 className="text-[0.6rem] font-bold tracking-[0.2em] uppercase text-tokeo-gold">
               Get In Touch
             </h4>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-1">
               {[
                 { label: 'tokeoacademy@gmail.com', href: 'mailto:tokeoacademy@gmail.com' },
                 { label: '+250 788 495 519',       href: 'tel:+250788495519' },
@@ -74,13 +74,13 @@ export default function Footer() {
                 <li key={label}>
                   <a
                     href={href}
-                    className="text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
+                    className="flex items-center min-h-[44px] text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
                   >
                     {label}
                   </a>
                 </li>
               ))}
-              <li className="text-tokeo-cream/40 text-sm">Kigali, Rwanda</li>
+              <li className="flex items-center min-h-[44px] text-tokeo-cream/40 text-sm">Kigali, Rwanda</li>
             </ul>
           </div>
 
@@ -93,7 +93,7 @@ export default function Footer() {
           <p className="text-tokeo-cream/20 text-xs">
             © {new Date().getFullYear()} Tokeo Academy. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {[
               { label: 'Privacy Policy', href: '/privacy-policy' },
               { label: 'Terms of Service', href: '/terms-of-service' },
@@ -101,7 +101,7 @@ export default function Footer() {
               <a
                 key={label}
                 href={href}
-                className="text-tokeo-cream/20 text-xs hover:text-tokeo-cream/50 transition-colors duration-200"
+                className="inline-flex items-center min-h-[44px] text-tokeo-cream/20 text-xs hover:text-tokeo-cream/50 transition-colors duration-200"
               >
                 {label}
               </a>

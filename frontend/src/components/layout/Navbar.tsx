@@ -64,7 +64,8 @@ export default function Navbar() {
             <a
               key={label}
               href={href}
-              className={`group relative text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
+              /* Added min-h-[44px] flex items-center */
+              className={`min-h-[44px] flex items-center group relative text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
             >
               {label}
               <span className="absolute -bottom-0.5 left-0 w-full h-[1.5px] bg-tokeo-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full" />
@@ -77,7 +78,8 @@ export default function Navbar() {
             <div className="relative" ref={accountRef}>
               <button
                 onClick={() => setAccountOpen((o) => !o)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
+                /* Added min-h-[44px] */
+                className={`min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
                   scrolled ? 'bg-tokeo-navy text-tokeo-cream' : 'bg-tokeo-cream text-tokeo-navy'
                 }`}
                 aria-label="Account menu"
@@ -95,14 +97,16 @@ export default function Navbar() {
                     <a
                       href="/admin/messages"
                       onClick={() => setAccountOpen(false)}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
+                      /* Added min-h-[44px] */
+                      className="w-full flex items-center min-h-[44px] gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
                     >
                       <ShieldCheck size={14} /> Admin Dashboard
                     </a>
                   )}
                   <button
                     onClick={() => { logout(); setAccountOpen(false) }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
+                    /* Added min-h-[44px] */
+                    className="w-full flex items-center min-h-[44px] gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
                   >
                     <LogOut size={14} /> Log out
                   </button>
@@ -112,17 +116,20 @@ export default function Navbar() {
           ) : (
             <a
               href="/login"
-              className={`flex items-center gap-1 text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
+              /* Added min-h-[44px] */
+              className={`flex items-center min-h-[44px] gap-1 text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
             >
               <UserIcon size={15} /> Log In
             </a>
           )}
+          {/* Your Button component likely already has sufficient height, but wrap it to be sure if needed */}
           <Button size="sm" href="/contact">Join Waitlist</Button>
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className={`md:hidden p-1 transition-colors duration-300 ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}
+          /* Added min-h-[44px] min-w-[44px] */
+          className={`md:hidden p-1 min-h-[44px] min-w-[44px] flex flex-col justify-center items-center transition-colors duration-300 ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -135,7 +142,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className={`md:hidden mt-2 max-w-6xl mx-auto border rounded-2xl px-6 py-5 flex flex-col gap-4 shadow-xl ${
+        <div className={`md:hidden mt-2 max-w-6xl mx-auto border rounded-2xl px-6 py-5 flex flex-col shadow-xl ${
           scrolled
             ? 'bg-white border-black/8'
             : 'bg-tokeo-navy/95 backdrop-blur-xl border-white/10 shadow-black/40'
@@ -144,7 +151,8 @@ export default function Navbar() {
             <a
               key={label}
               href={href}
-              className={`text-sm tracking-wide transition-colors ${
+              /* Changed to min-h-[44px] flex items-center */
+              className={`min-h-[44px] flex items-center text-sm tracking-wide transition-colors ${
                 scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'
               }`}
               onClick={() => setOpen(false)}
@@ -152,16 +160,17 @@ export default function Navbar() {
               {label}
             </a>
           ))}
-          <div className={`pt-1 border-t flex flex-col gap-3 ${scrolled ? 'border-black/10' : 'border-white/10'}`}>
+          <div className={`pt-3 mt-1 border-t flex flex-col gap-1 ${scrolled ? 'border-black/10' : 'border-white/10'}`}>
             {user ? (
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between min-h-[44px]">
                 <div className="min-w-0">
                   <p className={`text-sm font-medium truncate ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}>{user.name}</p>
                   <p className={`text-xs truncate ${scrolled ? 'text-tokeo-navy/50' : 'text-tokeo-cream/50'}`}>{user.email}</p>
                 </div>
                 <button
                   onClick={() => { logout(); setOpen(false) }}
-                  className={`flex items-center gap-1.5 text-sm shrink-0 ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
+                  /* Added min-h-[44px] */
+                  className={`flex items-center min-h-[44px] gap-1.5 text-sm shrink-0 ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
                 >
                   <LogOut size={14} /> Log out
                 </button>
@@ -170,12 +179,15 @@ export default function Navbar() {
               <a
                 href="/login"
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-1.5 text-sm tracking-wide text-left ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
+                /* Added min-h-[44px] */
+                className={`flex items-center min-h-[44px] gap-1.5 text-sm tracking-wide text-left ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
               >
                 <UserIcon size={15} /> Log In
               </a>
             )}
-            <Button size="sm" href="/contact">Join Waitlist</Button>
+            <div className="mt-2">
+               <Button size="sm" href="/contact">Join Waitlist</Button>
+            </div>
           </div>
         </div>
       )}

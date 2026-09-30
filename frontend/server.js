@@ -8,26 +8,6 @@ import helmet from 'helmet'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const port = process.env.PORT || 5174
 
-// Only these public/marketing routes get real server-side rendering, so
-// crawlers see real content. Everything else (auth, dashboard, admin,
-// payment) keeps working exactly as before: a plain client-rendered SPA
-// shell, since those pages shouldn't be indexed anyway.
-const SSR_PATTERNS = [
-  /^\/$/,
-  /^\/about$/,
-  /^\/programs$/,
-  /^\/programs\/[^/]+$/,
-  /^\/insights$/,
-  /^\/insights\/[^/]+$/,
-  /^\/contact$/,
-  /^\/privacy-policy$/,
-  /^\/terms-of-service$/,
-]
-
-function isSsrPath(url) {
-  return SSR_PATTERNS.some((re) => re.test(url.split('?')[0]))
-}
-
 // Escapes characters that could break out of the <script> tag or be
 // misread as markup, so embedded JSON can never smuggle in a script injection.
 function safeStringify(value) {
@@ -55,7 +35,7 @@ function applyHead(html, head) {
 }
 
 const template = await fs.readFile(path.resolve(__dirname, 'dist/client/index.html'), 'utf-8')
-const { render } = await import('./dist/server/entry-server.js')
+const { render, resolveRoute } = await import('./dist/server/entry-server.js')
 
 const app = express()
 
@@ -105,8 +85,13 @@ app.use(async (req, res) => {
     let appHtml = ''
     let dataScript = ''
     let head = null
-    if (isSsrPath(req.originalUrl)) {
+    const match = resolveRoute(req.originalUrl)
+    let status = match ? 200 : 404
+    // Known auth/admin routes keep their client-rendered shell. Unknown
+    // paths are server-rendered too, so the existing 404 page is in the HTML.
+    if (!match?.route.handle?.clientOnly) {
       const result = await render(req.originalUrl)
+      status = result.status
       appHtml = result.html
       head = result.head
       if (result.data) {
@@ -116,7 +101,7 @@ app.use(async (req, res) => {
     let html = template.replace('<!--ssr-outlet-->', appHtml)
     if (head) html = applyHead(html, head)
     html = html.replace('</head>', `${dataScript}</head>`)
-    res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
+    res.status(status).set({ 'Content-Type': 'text/html' }).end(html)
   } catch (e) {
     console.error(e.stack)
     res.status(500).end('Internal Server Error')

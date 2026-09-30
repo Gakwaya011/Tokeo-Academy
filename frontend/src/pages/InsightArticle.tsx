@@ -1,30 +1,75 @@
 import { useContext, useEffect, useState } from 'react'
-import { Navigate, useParams, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { InsightsDataContext } from '../context/InsightsDataContext'
 import { API_URL } from '../lib/api'
+import NotFound from './NotFound'
 import type { Insight } from '../types/insight'
 
 export default function InsightArticle() {
   const { slug } = useParams<{ slug: string }>()
   const ssrInsights = useContext(InsightsDataContext)
-  const [article, setArticle] = useState<Insight | undefined>(() => ssrInsights?.find((a) => a.slug === slug))
-  const [notFound, setNotFound] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+  const [result, setResult] = useState(() => {
+    const item = ssrInsights?.find((entry) => entry.slug === slug)
+    return { slug, item: item as Insight | undefined, notFound: ssrInsights !== null && !item, error: false }
+  })
+  // Do not reuse the previous slug's content or 404 while navigating.
+  const article = result.slug === slug ? result.item : undefined
+  const notFound = result.slug === slug && result.notFound
+  const failed = result.slug === slug && result.error
 
   useEffect(() => {
     if (!slug) return
-    fetch(`${API_URL}/api/insights/${slug}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Not found')
-        return res.json()
+    let cancelled = false
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), 10000)
+    fetch(`${API_URL}/api/insights/${encodeURIComponent(slug)}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (res.status === 404) {
+          if (!cancelled) setResult({ slug, item: undefined, notFound: true, error: false })
+          return
+        }
+        if (!res.ok) throw new Error(`/insights/${slug} responded ${res.status}`)
+        const { insight } = await res.json()
+        if (!insight || insight.slug !== slug) throw new Error('Invalid insight response')
+        if (!cancelled) setResult({ slug, item: insight, notFound: false, error: false })
       })
-      .then(({ insight }) => setArticle(insight))
-      .catch(() => setNotFound(true))
-  }, [slug])
+      .catch((error) => {
+        if (cancelled) return
+        console.error('Unable to fetch insight:', error)
+        // Keep confirmed SSR content/404s when a background refresh fails.
+        setResult((previous) => previous.slug === slug && (previous.item || previous.notFound)
+          ? previous
+          : { slug, item: undefined, notFound: false, error: true })
+      })
+      .finally(() => window.clearTimeout(timeout))
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [slug, attempt])
 
-  if (notFound && !article) return <Navigate to="/insights" replace />
-  if (!article) return null
+  if (notFound) return <NotFound />
+  if (!article) return (
+    <section className="w-full bg-tokeo-offwhite px-6 py-40 md:px-12 lg:px-24 flex items-center justify-center min-h-screen" aria-busy={!failed}>
+      <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-7">
+        <p role={failed ? 'alert' : 'status'} className="text-tokeo-navy text-lg leading-relaxed">
+          {failed ? "We couldn't load this insight. Please try again." : 'Loading insight...'}
+        </p>
+        {failed && (
+          <Button onClick={() => {
+            setResult({ slug, item: undefined, notFound: false, error: false })
+            setAttempt((value) => value + 1)
+          }}>
+            Try again
+          </Button>
+        )}
+      </div>
+    </section>
+  )
 
   const { imageUrl, imageFocus, category, title, body } = article
 

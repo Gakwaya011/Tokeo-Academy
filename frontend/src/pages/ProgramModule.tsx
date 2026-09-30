@@ -1,30 +1,75 @@
 import { useContext, useEffect, useState } from 'react'
-import { Navigate, useParams, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { ProgramsDataContext } from '../context/ProgramsDataContext'
 import { API_URL } from '../lib/api'
+import NotFound from './NotFound'
 import type { Program } from '../types/program'
 
 export default function ProgramModule() {
   const { slug } = useParams<{ slug: string }>()
   const ssrPrograms = useContext(ProgramsDataContext)
-  const [module, setModule] = useState<Program | undefined>(() => ssrPrograms?.find((m) => m.slug === slug))
-  const [notFound, setNotFound] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+  const [result, setResult] = useState(() => {
+    const item = ssrPrograms?.find((entry) => entry.slug === slug)
+    return { slug, item: item as Program | undefined, notFound: ssrPrograms !== null && !item, error: false }
+  })
+  // Do not reuse the previous slug's content or 404 while navigating.
+  const module = result.slug === slug ? result.item : undefined
+  const notFound = result.slug === slug && result.notFound
+  const failed = result.slug === slug && result.error
 
   useEffect(() => {
     if (!slug) return
-    fetch(`${API_URL}/api/programs/${slug}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Not found')
-        return res.json()
+    let cancelled = false
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), 10000)
+    fetch(`${API_URL}/api/programs/${encodeURIComponent(slug)}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (res.status === 404) {
+          if (!cancelled) setResult({ slug, item: undefined, notFound: true, error: false })
+          return
+        }
+        if (!res.ok) throw new Error(`/programs/${slug} responded ${res.status}`)
+        const { program } = await res.json()
+        if (!program || program.slug !== slug) throw new Error('Invalid program response')
+        if (!cancelled) setResult({ slug, item: program, notFound: false, error: false })
       })
-      .then(({ program }) => setModule(program))
-      .catch(() => setNotFound(true))
-  }, [slug])
+      .catch((error) => {
+        if (cancelled) return
+        console.error('Unable to fetch program:', error)
+        // Keep confirmed SSR content/404s when a background refresh fails.
+        setResult((previous) => previous.slug === slug && (previous.item || previous.notFound)
+          ? previous
+          : { slug, item: undefined, notFound: false, error: true })
+      })
+      .finally(() => window.clearTimeout(timeout))
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [slug, attempt])
 
-  if (notFound && !module) return <Navigate to="/programs" replace />
-  if (!module) return null
+  if (notFound) return <NotFound />
+  if (!module) return (
+    <section className="w-full bg-tokeo-offwhite px-6 py-40 md:px-12 lg:px-24 flex items-center justify-center min-h-screen" aria-busy={!failed}>
+      <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-7">
+        <p role={failed ? 'alert' : 'status'} className="text-tokeo-navy text-lg leading-relaxed">
+          {failed ? "We couldn't load this program. Please try again." : 'Loading program...'}
+        </p>
+        {failed && (
+          <Button onClick={() => {
+            setResult({ slug, item: undefined, notFound: false, error: false })
+            setAttempt((value) => value + 1)
+          }}>
+            Try again
+          </Button>
+        )}
+      </div>
+    </section>
+  )
 
   const { number, title, tagline, challenge, artifact, quote, imageUrl } = module
 

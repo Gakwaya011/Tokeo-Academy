@@ -66,10 +66,20 @@ app.use(
         ],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
-        // Lenient on connect/img hosts (GA + Cloudinary + the API, whose
-        // origin varies by deploy); strict where it matters (script, frame).
-        connectSrc: ["'self'", 'https:'],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://res.cloudinary.com',
+          'https://www.google-analytics.com',
+          'https://www.googletagmanager.com',
+        ],
+        connectSrc: [
+          "'self'",
+          'https://tokeoacademy.org',
+          'https://www.google-analytics.com',
+          'https://www.googletagmanager.com',
+        ],
         upgradeInsecureRequests: [],
       },
     },

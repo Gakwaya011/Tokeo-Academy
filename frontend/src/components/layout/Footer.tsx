@@ -1,3 +1,4 @@
+import SiteLink from '../ui/SiteLink'
 import { ArrowUpRight } from 'lucide-react'
 import logoGoldDark from '../../assets/logo-gold-dark.png'
 
@@ -45,7 +46,7 @@ export default function Footer() {
               <ul className="flex flex-col gap-1">
                 {links.map(({ label, href }) => (
                   <li key={label}>
-                    <a
+                    <SiteLink
                       href={href}
                       className="group flex items-center min-h-[44px] gap-1 text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
                     >
@@ -54,7 +55,7 @@ export default function Footer() {
                         size={12}
                         className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
                       />
-                    </a>
+                    </SiteLink>
                   </li>
                 ))}
               </ul>
@@ -72,12 +73,12 @@ export default function Footer() {
                 { label: '+250 788 495 519',       href: 'tel:+250788495519' },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <a
+                  <SiteLink
                     href={href}
                     className="flex items-center min-h-[44px] text-tokeo-cream/40 text-sm hover:text-tokeo-cream transition-colors duration-200"
                   >
                     {label}
-                  </a>
+                  </SiteLink>
                 </li>
               ))}
               <li className="flex items-center min-h-[44px] text-tokeo-cream/40 text-sm">Kigali, Rwanda</li>
@@ -98,13 +99,13 @@ export default function Footer() {
               { label: 'Privacy Policy', href: '/privacy-policy' },
               { label: 'Terms of Service', href: '/terms-of-service' },
             ].map(({ label, href }) => (
-              <a
+              <SiteLink
                 key={label}
                 href={href}
                 className="inline-flex items-center min-h-[44px] text-tokeo-cream/20 text-xs hover:text-tokeo-cream/50 transition-colors duration-200"
               >
                 {label}
-              </a>
+              </SiteLink>
             ))}
           </div>
         </div>

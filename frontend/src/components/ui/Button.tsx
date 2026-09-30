@@ -1,3 +1,4 @@
+import SiteLink from './SiteLink'
 import type { ButtonProps } from '../../types'
 import { trackEvent } from '../../lib/analytics'
 
@@ -30,7 +31,7 @@ export default function Button({
   if (href) {
     const label = typeof children === 'string' ? children : href
     return (
-      <a
+      <SiteLink
         href={href}
         className={classes}
         onClick={() => {
@@ -42,7 +43,7 @@ export default function Button({
         }}
       >
         {children}
-      </a>
+      </SiteLink>
     )
   }
 

@@ -1,3 +1,4 @@
+import SiteLink from './ui/SiteLink'
 import { useEffect, useState } from 'react'
 import { getConsent, setConsent } from '../lib/analytics'
 
@@ -24,9 +25,9 @@ export default function CookieNotice() {
         <p className="text-sm leading-relaxed text-tokeo-cream/70 flex-1">
           We use analytics cookies to understand how the site is used. No
           tracking runs until you accept.{' '}
-          <a href="/privacy-policy" className="text-tokeo-gold underline underline-offset-2">
+          <SiteLink href="/privacy-policy" className="text-tokeo-gold underline underline-offset-2">
             Privacy Policy
-          </a>
+          </SiteLink>
         </p>
         <div className="flex gap-3 shrink-0">
           <button

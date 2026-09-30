@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import { useEffect } from 'react'
+import { Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { trackPageView, initScrollDepth } from './lib/analytics'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Loader from './components/Loader'
+import VisitIntro from './components/VisitIntro'
+import PageContent from './components/PageContent'
 import CookieNotice from './components/CookieNotice'
 import Home from './pages/Home'
 import About from './pages/About'
@@ -24,11 +26,14 @@ import AdminRoute from './components/admin/AdminRoute'
 import AdminMessages from './pages/admin/Messages'
 import AdminInsights from './pages/admin/Insights'
 import AdminPrograms from './pages/admin/Programs'
-import RequireEnrollment from './components/payments/RequireEnrollment'
-import PaymentVerify from './pages/PaymentVerify'
-import Dashboard from './pages/Dashboard'
 
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/auth/callback']
+
+// Only these routes wait for the session. The public intro is independent of auth.
+function SessionBoundary() {
+  const { loading } = useAuth()
+  return loading ? <Loader /> : <Outlet />
+}
 
 function AppShell() {
   const location = useLocation()
@@ -40,15 +45,16 @@ function AppShell() {
     return teardown
   }, [location.pathname, location.search])
 
-  const isAuthRoute = AUTH_ROUTES.includes(location.pathname)
-  const isAdminRoute = location.pathname.startsWith('/admin')
-  const isPlatformRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/payment')
-  const hideChrome = isAuthRoute || isAdminRoute || isPlatformRoute
+  const path = location.pathname.replace(/\/+$/, '').toLowerCase() || '/'
+  const isAuthRoute = AUTH_ROUTES.includes(path)
+  const isAdminRoute = path === '/admin' || path.startsWith('/admin/')
+  const hideChrome = isAuthRoute || isAdminRoute
 
   return (
     <>
+      {!hideChrome && <VisitIntro />}
       {!hideChrome && <Navbar />}
-      <main>
+      <PageContent animate={!hideChrome}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -57,48 +63,42 @@ function AppShell() {
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/payment/verify" element={<PaymentVerify />} />
-          <Route
-            path="/dashboard"
-            element={
-              <RequireEnrollment>
-                <Dashboard />
-              </RequireEnrollment>
-            }
-          />
-          <Route
-            path="/admin/messages"
-            element={
-              <AdminRoute>
-                <AdminMessages />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/insights"
-            element={
-              <AdminRoute>
-                <AdminInsights />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/programs"
-            element={
-              <AdminRoute>
-                <AdminPrograms />
-              </AdminRoute>
-            }
-          />
+          <Route element={<SessionBoundary />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/admin" element={<AdminRoute><Navigate to="/admin/messages" replace /></AdminRoute>} />
+            <Route
+              path="/admin/messages"
+              element={
+                <AdminRoute>
+                  <AdminMessages />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/insights"
+              element={
+                <AdminRoute>
+                  <AdminInsights />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/programs"
+              element={
+                <AdminRoute>
+                  <AdminPrograms />
+                </AdminRoute>
+              }
+            />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </main>
+      </PageContent>
       {!hideChrome && <Footer />}
       <CookieNotice />
     </>
@@ -106,11 +106,12 @@ function AppShell() {
 }
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false)
+  const { pathname } = useLocation()
+  const path = pathname.replace(/\/+$/, '').toLowerCase() || '/'
+  const checkSession = AUTH_ROUTES.includes(path) || path === '/admin' || path.startsWith('/admin/')
 
   return (
-    <AuthProvider>
-      {!loaded && <Loader onDone={() => setLoaded(true)} />}
+    <AuthProvider checkSession={checkSession}>
       <AppShell />
     </AuthProvider>
   )

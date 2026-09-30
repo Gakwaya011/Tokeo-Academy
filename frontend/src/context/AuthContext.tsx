@@ -22,19 +22,26 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children, checkSession }: { children: ReactNode; checkSession: boolean }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // The session lives in an httpOnly cookie, invisible to JS, so the only
-    // way to know if one exists is to ask the API. A 401 here just means
-    // "not logged in" — not an error worth surfacing.
-    apiRequest<{ user: User }>('/api/auth/me')
-      .then(({ user }) => setUser(user))
+    if (!checkSession || !loading) return
+
+    // Keep public visits free of session requests, including after navigation
+    // away from an auth page while its request is still pending.
+    const controller = new AbortController()
+    apiRequest<{ user: User }>('/api/auth/me', { signal: controller.signal })
+      .then(({ user }) => {
+        if (!controller.signal.aborted) setUser(user)
+      })
       .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false)
+      })
+    return () => controller.abort()
+  }, [checkSession, loading])
 
   const login = async (email: string, password: string, remember: boolean) => {
     const { user } = await apiRequest<{ user: User }>('/api/auth/login', {

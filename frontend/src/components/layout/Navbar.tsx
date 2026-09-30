@@ -1,3 +1,4 @@
+import SiteLink from '../ui/SiteLink'
 import { useEffect, useRef, useState } from 'react'
 import { LogOut, ShieldCheck, User as UserIcon } from 'lucide-react'
 import Button from '../ui/Button'
@@ -46,30 +47,36 @@ export default function Navbar() {
     : 'text-tokeo-cream/60 hover:text-tokeo-cream'
 
   return (
-    <nav className="fixed top-4 left-4 right-4 z-50 md:top-5 md:left-8 md:right-8">
+    <nav onClick={(event) => {
+      if ((event.target as HTMLElement).closest('a')) {
+        setOpen(false)
+        setAccountOpen(false)
+      }
+    }} className="fixed top-4 left-4 right-4 z-50 md:top-5 md:left-8 md:right-8">
       <div
         className={`max-w-6xl mx-auto px-5 md:px-8 h-[60px] flex items-center justify-between rounded-full border transition-all duration-500 ${pillClass}`}
       >
-        <a href="/" className="shrink-0">
+        <SiteLink href="/" className="shrink-0">
           <img
             src={scrolled ? logoGold : logoCream}
             alt="Tokeo Academy"
             className="h-8 md:h-9 w-auto transition-all duration-500"
           />
-        </a>
+        </SiteLink>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {links.map(({ label, href }) => (
-            <a
+            <SiteLink
               key={label}
               href={href}
-              /* Added min-h-[44px] flex items-center */
-              className={`min-h-[44px] flex items-center group relative text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
+              className={`min-h-[44px] flex items-center group text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
             >
-              {label}
-              <span className="absolute -bottom-0.5 left-0 w-full h-[1.5px] bg-tokeo-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full" />
-            </a>
+              <span className="relative">
+                {label}
+                <span className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-tokeo-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full" />
+              </span>
+            </SiteLink>
           ))}
         </div>
 
@@ -78,7 +85,6 @@ export default function Navbar() {
             <div className="relative" ref={accountRef}>
               <button
                 onClick={() => setAccountOpen((o) => !o)}
-                /* Added min-h-[44px] */
                 className={`min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
                   scrolled ? 'bg-tokeo-navy text-tokeo-cream' : 'bg-tokeo-cream text-tokeo-navy'
                 }`}
@@ -94,18 +100,16 @@ export default function Navbar() {
                     <p className="text-xs text-tokeo-navy/50 truncate">{user.email}</p>
                   </div>
                   {user.role === 'ADMIN' && (
-                    <a
+                    <SiteLink
                       href="/admin/messages"
                       onClick={() => setAccountOpen(false)}
-                      /* Added min-h-[44px] */
                       className="w-full flex items-center min-h-[44px] gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
                     >
                       <ShieldCheck size={14} /> Admin Dashboard
-                    </a>
+                    </SiteLink>
                   )}
                   <button
                     onClick={() => { logout(); setAccountOpen(false) }}
-                    /* Added min-h-[44px] */
                     className="w-full flex items-center min-h-[44px] gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
                   >
                     <LogOut size={14} /> Log out
@@ -114,21 +118,18 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <a
+            <SiteLink
               href="/login"
-              /* Added min-h-[44px] */
               className={`flex items-center min-h-[44px] gap-1 text-sm tracking-wide transition-colors duration-300 ${linkClass}`}
             >
               <UserIcon size={15} /> Log In
-            </a>
+            </SiteLink>
           )}
-          {/* Your Button component likely already has sufficient height, but wrap it to be sure if needed */}
           <Button size="sm" href="/contact">Join Waitlist</Button>
         </div>
 
         {/* Mobile hamburger */}
         <button
-          /* Added min-h-[44px] min-w-[44px] */
           className={`md:hidden p-1 min-h-[44px] min-w-[44px] flex flex-col justify-center items-center transition-colors duration-300 ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
@@ -148,17 +149,16 @@ export default function Navbar() {
             : 'bg-tokeo-navy/95 backdrop-blur-xl border-white/10 shadow-black/40'
         }`}>
           {links.map(({ label, href }) => (
-            <a
+            <SiteLink
               key={label}
               href={href}
-              /* Changed to min-h-[44px] flex items-center */
               className={`min-h-[44px] flex items-center text-sm tracking-wide transition-colors ${
                 scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'
               }`}
               onClick={() => setOpen(false)}
             >
               {label}
-            </a>
+            </SiteLink>
           ))}
           <div className={`pt-3 mt-1 border-t flex flex-col gap-1 ${scrolled ? 'border-black/10' : 'border-white/10'}`}>
             {user ? (
@@ -169,21 +169,19 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={() => { logout(); setOpen(false) }}
-                  /* Added min-h-[44px] */
                   className={`flex items-center min-h-[44px] gap-1.5 text-sm shrink-0 ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
                 >
                   <LogOut size={14} /> Log out
                 </button>
               </div>
             ) : (
-              <a
+              <SiteLink
                 href="/login"
                 onClick={() => setOpen(false)}
-                /* Added min-h-[44px] */
                 className={`flex items-center min-h-[44px] gap-1.5 text-sm tracking-wide text-left ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
               >
                 <UserIcon size={15} /> Log In
-              </a>
+              </SiteLink>
             )}
             <div className="mt-2">
                <Button size="sm" href="/contact">Join Waitlist</Button>

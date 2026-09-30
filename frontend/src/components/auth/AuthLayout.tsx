@@ -1,3 +1,4 @@
+import SiteLink from '../ui/SiteLink'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import logoGold from '../../assets/logo-gold.png'
@@ -31,9 +32,9 @@ export default function AuthLayout({
           <div className="absolute -top-16 -right-10 w-52 h-52 rounded-full bg-tokeo-gold/20 blur-3xl" />
           <div className="absolute -bottom-16 -left-10 w-48 h-48 rounded-full bg-tokeo-gold/10 blur-3xl" />
 
-          <a href="/" className="relative z-10 inline-flex items-center gap-2 bg-white/10 rounded-xl px-3 py-2 w-fit">
+          <SiteLink href="/" className="relative z-10 inline-flex items-center gap-2 bg-white/10 rounded-xl px-3 py-2 w-fit">
             <img src={logoCream} alt="Tokeo Academy" className="h-5 w-auto object-contain" />
-          </a>
+          </SiteLink>
 
           <div className="relative z-10 flex flex-col gap-3 max-w-xs">
             <h2 className="text-2xl font-bold text-tokeo-cream tracking-tight">{title}</h2>
@@ -54,9 +55,9 @@ export default function AuthLayout({
         {/* Form side */}
         <div className="flex flex-col justify-center px-6 sm:px-10 py-10 sm:py-14">
           <div className="w-full max-w-sm mx-auto">
-            <a href="/" className="lg:hidden inline-block mb-8">
+            <SiteLink href="/" className="lg:hidden inline-block mb-8">
               <img src={logoGold} alt="Tokeo Academy" className="h-7 w-auto" />
-            </a>
+            </SiteLink>
             {children}
           </div>
         </div>

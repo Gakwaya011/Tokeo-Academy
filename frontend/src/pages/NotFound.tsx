@@ -1,3 +1,4 @@
+import SiteLink from '../components/ui/SiteLink'
 import Button from '../components/ui/Button'
 
 export default function NotFound() {
@@ -16,12 +17,12 @@ export default function NotFound() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mt-2">
           <Button href="/" size="lg">Back to Home</Button>
-          <a
+          <SiteLink
             href="/contact"
             className="inline-flex items-center justify-center font-semibold tracking-wide transition-all duration-200 px-8 py-4 text-lg rounded border border-tokeo-navy/20 text-tokeo-navy hover:bg-tokeo-navy hover:text-tokeo-cream"
           >
             Contact Us
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>

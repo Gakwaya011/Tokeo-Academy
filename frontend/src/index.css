@@ -26,3 +26,16 @@
     border-radius: 2px;
   }
 }
+/* The page renders immediately; this cosmetic intro never waits for data. */
+.visit-intro:not([hidden]) > div {
+  animation: visit-intro-fade 2650ms ease-out forwards;
+}
+
+@keyframes visit-intro-fade {
+  0%, 75.47% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visit-intro { display: none; }
+}

@@ -27,8 +27,13 @@ export default function Programs() {
 
   useEffect(() => {
     fetch(`${API_URL}/api/programs`)
-      .then((res) => res.json())
-      .then(({ programs }) => setPrograms(programs))
+      .then((res) => {
+        if (!res.ok) throw new Error(`/programs responded ${res.status}`)
+        return res.json()
+      })
+      .then((data) => {
+        if (Array.isArray(data?.programs)) setPrograms(data.programs)
+      })
       .catch(() => {})
   }, [])
 
@@ -112,7 +117,7 @@ export default function Programs() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programs.map(({ number, slug, title, tagline, imageUrl }) => (
+            {programs?.map(({ number, slug, title, tagline, imageUrl }) => (
               <Link
                 key={slug}
                 to={`/programs/${slug}`}

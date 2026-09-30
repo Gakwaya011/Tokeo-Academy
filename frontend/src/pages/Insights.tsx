@@ -12,8 +12,13 @@ export default function Insights() {
 
   useEffect(() => {
     fetch(`${API_URL}/api/insights`)
-      .then((res) => res.json())
-      .then(({ insights }) => setArticles(insights))
+      .then((res) => {
+        if (!res.ok) throw new Error(`/insights responded ${res.status}`)
+        return res.json()
+      })
+      .then((data) => {
+        if (Array.isArray(data?.insights)) setArticles(data.insights)
+      })
       .catch(() => {})
   }, [])
 
@@ -50,7 +55,7 @@ export default function Insights() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {articles.map(({ slug, imageUrl, imageFocus, category, title, excerpt }) => (
+            {articles?.map(({ slug, imageUrl, imageFocus, category, title, excerpt }) => (
               <Link
                 key={slug}
                 to={`/insights/${slug}`}

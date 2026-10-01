@@ -15,7 +15,7 @@ interface AuthContextValue {
   loading: boolean
   login: (email: string, password: string, remember: boolean) => Promise<void>
   signup: (name: string, email: string, password: string) => Promise<void>
-  logout: () => void
+  logout: () => Promise<boolean>
   requestPasswordReset: (email: string) => Promise<void>
   refreshUser: () => Promise<void>
 }
@@ -56,11 +56,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(user)
   }
 
-  const logout = () => {
-    setUser(null)
-    // Best-effort — the local state is already cleared, so the UI updates
-    // instantly regardless of whether this request succeeds.
-    apiRequest('/api/auth/logout', { method: 'POST' }).catch(() => {})
+  const logout = async () => {
+    try {
+      await apiRequest('/api/auth/logout', { method: 'POST' }, 204)
+      setUser(null)
+      return true
+    } catch {
+      window.alert('Unable to log out. You are still signed in. Please try again.')
+      return false
+    }
   }
 
   const requestPasswordReset = async (email: string) => {

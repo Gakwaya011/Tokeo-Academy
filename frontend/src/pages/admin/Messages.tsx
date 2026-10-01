@@ -31,12 +31,11 @@ export default function AdminMessages() {
   useEffect(() => {
     apiRequest<{ submissions: Submission[] }>('/api/contact')
       .then(({ submissions }) => setSubmissions(submissions))
-      .catch(() => {
+      .catch(async () => {
         // A failed fetch here almost always means the session token is stale
         // (e.g. role changed after login) — send them back to log in fresh
         // instead of showing a raw backend error.
-        logout()
-        navigate('/login', { replace: true })
+        if (await logout()) navigate('/login', { replace: true })
       })
       .finally(() => setLoading(false))
   }, [logout, navigate])

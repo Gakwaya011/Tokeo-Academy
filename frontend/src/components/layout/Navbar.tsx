@@ -109,7 +109,7 @@ export default function Navbar() {
                     </SiteLink>
                   )}
                   <button
-                    onClick={() => { logout(); setAccountOpen(false) }}
+                    onClick={async () => { if (await logout()) setAccountOpen(false) }}
                     className="w-full flex items-center min-h-[44px] gap-2 px-4 py-2 text-sm text-tokeo-navy/70 hover:bg-tokeo-navy/5"
                   >
                     <LogOut size={14} /> Log out
@@ -161,6 +161,17 @@ export default function Navbar() {
               {label}
             </SiteLink>
           ))}
+          {user?.role === 'ADMIN' && (
+            <SiteLink
+              href="/admin/messages"
+              onClick={() => setOpen(false)}
+              className={`flex items-center min-h-[44px] gap-2 text-sm tracking-wide transition-colors ${
+                scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'
+              }`}
+            >
+              <ShieldCheck size={14} /> Admin Dashboard
+            </SiteLink>
+          )}
           <div className={`pt-3 mt-1 border-t flex flex-col gap-1 ${scrolled ? 'border-black/10' : 'border-white/10'}`}>
             {user ? (
               <div className="flex items-center justify-between min-h-[44px]">
@@ -169,7 +180,7 @@ export default function Navbar() {
                   <p className={`text-xs truncate ${scrolled ? 'text-tokeo-navy/50' : 'text-tokeo-cream/50'}`}>{user.email}</p>
                 </div>
                 <button
-                  onClick={() => { logout(); setOpen(false) }}
+                  onClick={async () => { if (await logout()) setOpen(false) }}
                   className={`flex items-center min-h-[44px] gap-1.5 text-sm shrink-0 ${scrolled ? 'text-tokeo-navy/70 hover:text-tokeo-navy' : 'text-tokeo-cream/70 hover:text-tokeo-cream'}`}
                 >
                   <LogOut size={14} /> Log out

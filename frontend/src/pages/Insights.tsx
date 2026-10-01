@@ -9,6 +9,7 @@ import type { Insight } from '../types/insight'
 export default function Insights() {
   const ssrInsights = useContext(InsightsDataContext)
   const [articles, setArticles] = useState<Insight[]>(ssrInsights ?? [])
+  const [loading, setLoading] = useState(ssrInsights === null)
 
   useEffect(() => {
     fetch(`${API_URL}/api/insights`)
@@ -20,6 +21,7 @@ export default function Insights() {
         if (Array.isArray(data?.insights)) setArticles(data.insights)
       })
       .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   return (
@@ -55,6 +57,11 @@ export default function Insights() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {!loading && articles.length === 0 && (
+              <div role="status" className="col-span-full text-center text-gray-500 py-8">
+                Currently no items available to display.
+              </div>
+            )}
             {articles?.map(({ slug, imageUrl, imageFocus, category, title, excerpt }) => (
               <Link
                 key={slug}

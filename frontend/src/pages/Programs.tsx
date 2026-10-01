@@ -24,6 +24,7 @@ const appliedPrograms = [
 export default function Programs() {
   const ssrPrograms = useContext(ProgramsDataContext)
   const [programs, setPrograms] = useState<Program[]>(ssrPrograms ?? [])
+  const [loading, setLoading] = useState(ssrPrograms === null)
 
   useEffect(() => {
     fetch(`${API_URL}/api/programs`)
@@ -35,6 +36,7 @@ export default function Programs() {
         if (Array.isArray(data?.programs)) setPrograms(data.programs)
       })
       .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   return (
@@ -117,6 +119,11 @@ export default function Programs() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {!loading && programs.length === 0 && (
+              <div role="status" className="col-span-full text-center text-tokeo-cream/70 py-8">
+                Currently no items available to display.
+              </div>
+            )}
             {programs?.map(({ number, slug, title, tagline, imageUrl }) => (
               <Link
                 key={slug}

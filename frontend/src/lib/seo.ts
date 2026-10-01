@@ -56,7 +56,9 @@ export function resolveMeta(
   ctx?: { programs?: SsrItem[] | null; insights?: SsrItem[] | null },
 ): Meta {
   const path = pathname.split('?')[0].replace(/\/+$/, '') || '/'
-  const canonical = `${SITE.url}${path === '/' ? '' : path}`
+  const canonical = path === '/programs'
+    ? 'https://tokeoacademy.org/programs'
+    : `${SITE.url}${path === '/' ? '' : path}`
 
   const staticEntry = STATIC[path]
   if (staticEntry) return { ...staticEntry, canonical }

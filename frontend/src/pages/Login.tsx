@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
@@ -10,6 +10,12 @@ import { API_URL } from '../lib/api'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Login() {
+  useEffect(() => {
+    const previousTitle = document.title
+    document.title = 'Log In | Tokeo Academy'
+    return () => { document.title = previousTitle }
+  }, [])
+
   const { login } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()

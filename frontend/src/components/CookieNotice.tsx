@@ -31,12 +31,14 @@ export default function CookieNotice() {
         </p>
         <div className="flex gap-3 shrink-0">
           <button
+            type="button"
             onClick={() => choose('denied')}
             className="px-4 py-2 text-sm font-semibold rounded-lg border border-white/15 text-tokeo-cream/80 hover:bg-white/5 transition-colors"
           >
             Decline
           </button>
           <button
+            type="button"
             onClick={() => choose('granted')}
             className="px-4 py-2 text-sm font-semibold rounded-lg bg-tokeo-gold text-tokeo-navy hover:opacity-90 transition-opacity"
           >

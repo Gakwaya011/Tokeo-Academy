@@ -5,7 +5,6 @@ import { trackPageView, initScrollDepth } from './lib/analytics'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Loader from './components/Loader'
-import VisitIntro from './components/VisitIntro'
 import PageContent from './components/PageContent'
 import CookieNotice from './components/CookieNotice'
 import Home from './pages/Home'
@@ -52,7 +51,6 @@ function AppShell() {
 
   return (
     <>
-      {!hideChrome && <VisitIntro />}
       {!hideChrome && <Navbar />}
       <PageContent animate={!hideChrome}>
         <Routes>

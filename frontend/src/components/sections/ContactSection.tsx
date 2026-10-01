@@ -6,7 +6,7 @@ import { trackEvent } from '../../lib/analytics'
 
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
   useEffect(() => {
     const el = ref.current
     if (!el) return
@@ -57,6 +57,13 @@ const contactItems = [
 ]
 
 export default function ContactSection() {
+  const mountedAt = useRef(0)
+  const botField = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    mountedAt.current = Date.now()
+  }, [])
+
   const [form, setForm] = useState<FormData>(initialForm)
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -69,6 +76,7 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!mountedAt.current || Date.now() - mountedAt.current < 2000 || botField.current?.value) return
     setError('')
     setLoading(true)
     try {
@@ -160,6 +168,7 @@ export default function ContactSection() {
             </div>
           ) : (
             <form action="/api/contact" method="POST" onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <input ref={botField} type="text" name="bot_field" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
               {error && (
                 <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</div>

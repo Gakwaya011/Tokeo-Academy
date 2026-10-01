@@ -1,6 +1,10 @@
 // Trailing slash stripped defensively — an env var set with one (e.g. ".../onrender.com/")
 // would otherwise double up with the leading slash on each path and 404 on every request.
-export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '')
+// Callers already include /api; production browsers use the current origin.
+// Server-side fetches retain the absolute base URL they require.
+export const API_URL = import.meta.env.PROD && !import.meta.env.SSR
+  ? ''
+  : (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '')
 
 const GENERIC_ERROR = 'Something went wrong. Please try again.'
 

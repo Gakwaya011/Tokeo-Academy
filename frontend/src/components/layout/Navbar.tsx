@@ -130,6 +130,7 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
+          type="button"
           className={`md:hidden p-1 min-h-[44px] min-w-[44px] flex flex-col justify-center items-center transition-colors duration-300 ${scrolled ? 'text-tokeo-navy' : 'text-tokeo-cream'}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"

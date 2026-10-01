@@ -3,7 +3,7 @@ import founderPhoto from '../../assets/founder.jpeg'
 
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
   useEffect(() => {
     const el = ref.current
     if (!el) return

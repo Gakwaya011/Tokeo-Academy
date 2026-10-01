@@ -26,6 +26,7 @@ app.use(helmet())
 const allowedOrigins = env.CORS_ORIGIN.split(',').map(s => s.trim())
 app.use(cors({ origin: allowedOrigins, credentials: true }))
 app.use(express.json({ limit: '32kb' }))
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // Stateless use only — no passport.session(). The Google strategy resolves

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
   useEffect(() => {
     const el = ref.current
     if (!el) return
@@ -52,11 +52,11 @@ export default function ProblemSolutionSection() {
           }`} style={{ transitionDelay: '300ms' }}>
             Problem Statement
           </p>
-          <h3 className={`text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight mb-5 leading-tight relative z-10 transition-[opacity,transform] duration-500 ${
+          <h2 className={`text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight mb-5 leading-tight relative z-10 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`} style={{ transitionDelay: '380ms' }}>
             Knowledge without execution.
-          </h3>
+          </h2>
           <p className={`text-tokeo-navy/55 text-lg leading-relaxed relative z-10 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`} style={{ transitionDelay: '460ms' }}>
@@ -100,11 +100,11 @@ export default function ProblemSolutionSection() {
           }`} style={{ transitionDelay: '450ms' }}>
             Solution
           </p>
-          <h3 className={`text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight mb-5 leading-tight relative z-10 transition-[opacity,transform] duration-500 ${
+          <h2 className={`text-3xl md:text-4xl font-bold text-tokeo-navy tracking-tight mb-5 leading-tight relative z-10 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`} style={{ transitionDelay: '530ms' }}>
             A system built for follow-through.
-          </h3>
+          </h2>
           <p className={`text-tokeo-navy/55 text-lg leading-relaxed relative z-10 transition-[opacity,transform] duration-500 ${
             section.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`} style={{ transitionDelay: '610ms' }}>

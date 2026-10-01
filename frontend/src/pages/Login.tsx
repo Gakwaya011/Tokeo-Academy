@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
@@ -10,12 +10,6 @@ import { API_URL } from '../lib/api'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Login() {
-  useEffect(() => {
-    const previousTitle = document.title
-    document.title = 'Log In | Tokeo Academy'
-    return () => { document.title = previousTitle }
-  }, [])
-
   const { login } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -88,9 +82,11 @@ export default function Login() {
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <label htmlFor="login-password" className="text-xs font-medium text-tokeo-navy/60">Password</label>
+            {/* Phase 2: restore after the client's domain email provider is selected.
             <Link to="/forgot-password" className="text-xs text-tokeo-navy/50 hover:text-tokeo-navy underline underline-offset-2">
               Forgot password?
             </Link>
+            */}
           </div>
           <div className="relative">
             <input

@@ -4,6 +4,10 @@ import { createSubmissionSchema } from './contact.schema'
 import * as contactService from './contact.service'
 
 export const createSubmissionHandler = asyncHandler(async (req: Request, res: Response) => {
+  if (req.body?.bot_field) {
+    return res.status(200).json({ success: true, message: 'Message sent' })
+  }
+
   const input = createSubmissionSchema.parse(req.body)
   const submission = await contactService.createSubmission(input)
   res.status(201).json({ submission })

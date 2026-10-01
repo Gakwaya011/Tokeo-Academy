@@ -26,6 +26,8 @@ export default function ForgotPassword() {
     try {
       await requestPasswordReset(email)
       setSent(true)
+    } catch {
+      setError('Unable to request a password reset right now. Please try again later.')
     } finally {
       setLoading(false)
     }

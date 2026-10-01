@@ -52,6 +52,11 @@ export default function InsightArticle() {
     }
   }, [slug, attempt])
 
+  useEffect(() => {
+    if (notFound) document.title = 'Page Not Found | Tokeo Academy'
+    else if (article) document.title = `${article.title} | Tokeo Academy`
+  }, [article, notFound])
+
   if (notFound) return <NotFound />
   if (!article) return (
     <section className="w-full bg-tokeo-offwhite px-6 py-40 md:px-12 lg:px-24 flex items-center justify-center min-h-screen" aria-busy={!failed}>

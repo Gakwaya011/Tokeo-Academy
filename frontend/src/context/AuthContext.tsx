@@ -22,15 +22,12 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-export function AuthProvider({ children, checkSession }: { children: ReactNode; checkSession: boolean }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!checkSession || !loading) return
-
-    // Keep public visits free of session requests, including after navigation
-    // away from an auth page while its request is still pending.
+    // Restore the session on every mount without blocking public pages.
     const controller = new AbortController()
     apiRequest<{ user: User }>('/api/auth/me', { signal: controller.signal })
       .then(({ user }) => {
@@ -41,7 +38,7 @@ export function AuthProvider({ children, checkSession }: { children: ReactNode; 
         if (!controller.signal.aborted) setLoading(false)
       })
     return () => controller.abort()
-  }, [checkSession, loading])
+  }, [])
 
   const login = async (email: string, password: string, remember: boolean) => {
     const { user } = await apiRequest<{ user: User }>('/api/auth/login', {
@@ -67,9 +64,10 @@ export function AuthProvider({ children, checkSession }: { children: ReactNode; 
   }
 
   const requestPasswordReset = async (email: string) => {
-    // No backend endpoint for this yet — simulated until real email delivery is wired up.
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    void email
+    await apiRequest('/api/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }, 200)
   }
 
   const refreshUser = async () => {

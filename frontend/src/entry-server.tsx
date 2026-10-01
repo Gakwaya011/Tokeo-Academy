@@ -25,34 +25,44 @@ export function resolveRoute(url: string) {
   return matchRoutes(routes, url)?.[0] ?? null
 }
 
-async function fetchPrograms(): Promise<Program[]> {
-  const res = await fetch(`${API_URL}/api/programs`)
-  if (!res.ok) throw new Error(`/api/programs responded ${res.status}`)
-  const { programs } = await res.json()
-  if (!Array.isArray(programs)) throw new Error('Invalid programs response')
-  return programs
+async function fetchPrograms(): Promise<Program[] | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/programs`, { signal: AbortSignal.timeout(5000) })
+    if (!res.ok) throw new Error(`/api/programs responded ${res.status}`)
+    const { programs } = await res.json()
+    if (!Array.isArray(programs)) throw new Error('Invalid programs response')
+    return programs
+  } catch (error) {
+    console.error('Unable to load programs during SSR:', error)
+    return null
+  }
 }
 
-async function fetchInsights(): Promise<Insight[]> {
-  const res = await fetch(`${API_URL}/api/insights`)
-  if (!res.ok) throw new Error(`/api/insights responded ${res.status}`)
-  const { insights } = await res.json()
-  if (!Array.isArray(insights)) throw new Error('Invalid insights response')
-  return insights
+async function fetchInsights(): Promise<Insight[] | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/insights`, { signal: AbortSignal.timeout(5000) })
+    if (!res.ok) throw new Error(`/api/insights responded ${res.status}`)
+    const { insights } = await res.json()
+    if (!Array.isArray(insights)) throw new Error('Invalid insights response')
+    return insights
+  } catch (error) {
+    console.error('Unable to load insights during SSR:', error)
+    return null
+  }
 }
 
 export async function render(url: string) {
   const path = url.split('?')[0]
   const match = resolveRoute(url)
   const route = match?.route.path
-  // Let failures reach server.js's 500 handler. An unavailable API is not
-  // evidence that a requested slug does not exist.
+  // Null means unavailable data: listings render empty and detail pages retry.
+  // Only a successful response can confirm that a slug does not exist.
   const [programs, insights] = await Promise.all([
     route === '/programs' || route === '/programs/:slug' ? fetchPrograms() : Promise.resolve(null),
     route === '/insights' || route === '/insights/:slug' ? fetchInsights() : Promise.resolve(null),
   ])
-  const missingProgram = route === '/programs/:slug' && !programs?.some((p) => p.slug === match?.params.slug)
-  const missingInsight = route === '/insights/:slug' && !insights?.some((i) => i.slug === match?.params.slug)
+  const missingProgram = route === '/programs/:slug' && programs !== null && !programs.some((p) => p.slug === match?.params.slug)
+  const missingInsight = route === '/insights/:slug' && insights !== null && !insights.some((i) => i.slug === match?.params.slug)
   const status = !match || missingProgram || missingInsight ? 404 : 200
 
   const html = renderToString(

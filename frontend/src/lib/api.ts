@@ -12,7 +12,7 @@ const GENERIC_ERROR = 'Something went wrong. Please try again.'
 // (e.g. "Incorrect email or password."). Anything else — network failures,
 // routing/500s, unexpected shapes — should never surface raw to the user;
 // the real detail still goes to the console for us to debug.
-export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function apiRequest<T>(path: string, options: RequestInit = {}, expectedStatus?: number): Promise<T> {
   let res: Response
   try {
     res = await fetch(`${API_URL}${path}`, {
@@ -37,6 +37,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     console.error(`API error (${res.status}) on ${path}:`, data)
     const message = res.status < 500 && typeof data.error === 'string' ? data.error : GENERIC_ERROR
     throw new Error(message)
+  }
+
+  if (expectedStatus !== undefined && res.status !== expectedStatus) {
+    throw new Error(GENERIC_ERROR)
   }
 
   return data as T

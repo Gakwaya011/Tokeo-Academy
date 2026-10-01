@@ -1,7 +1,10 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { trackPageView, initScrollDepth } from './lib/analytics'
+import { resolveMeta } from './lib/seo'
+import { ProgramsDataContext } from './context/ProgramsDataContext'
+import { InsightsDataContext } from './context/InsightsDataContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Loader from './components/Loader'
@@ -27,8 +30,18 @@ import AdminInsights from './pages/admin/Insights'
 import AdminPrograms from './pages/admin/Programs'
 
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/auth/callback']
+const PRIVATE_TITLES: Record<string, string> = {
+  '/login': 'Log In | Tokeo Academy',
+  '/signup': 'Sign Up | Tokeo Academy',
+  '/forgot-password': 'Reset Password | Tokeo Academy',
+  '/auth/callback': 'Signing In | Tokeo Academy',
+  '/admin': 'Admin Dashboard | Tokeo Academy',
+  '/admin/messages': 'Messages | Tokeo Academy',
+  '/admin/insights': 'Manage Insights | Tokeo Academy',
+  '/admin/programs': 'Manage Programs | Tokeo Academy',
+}
 
-// Only these routes wait for the session. The public intro is independent of auth.
+// Only auth/admin routes wait for session restoration; public pages render immediately.
 function SessionBoundary() {
   const { loading } = useAuth()
   return loading ? <Loader /> : <Outlet />
@@ -36,6 +49,13 @@ function SessionBoundary() {
 
 function AppShell() {
   const location = useLocation()
+  const programs = useContext(ProgramsDataContext)
+  const insights = useContext(InsightsDataContext)
+
+  useEffect(() => {
+    const path = location.pathname.replace(/\/+$/, '').toLowerCase() || '/'
+    document.title = PRIVATE_TITLES[path] || resolveMeta(path, { programs, insights }).title
+  }, [location.pathname, programs, insights])
 
   // GA4 SPA tracking: one page_view per route, scroll-depth re-armed each time.
   useEffect(() => {
@@ -104,12 +124,8 @@ function AppShell() {
 }
 
 export default function App() {
-  const { pathname } = useLocation()
-  const path = pathname.replace(/\/+$/, '').toLowerCase() || '/'
-  const checkSession = AUTH_ROUTES.includes(path) || path === '/admin' || path.startsWith('/admin/')
-
   return (
-    <AuthProvider checkSession={checkSession}>
+    <AuthProvider>
       <AppShell />
     </AuthProvider>
   )
